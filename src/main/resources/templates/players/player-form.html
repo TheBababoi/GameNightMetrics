@@ -34,20 +34,55 @@
             <input type="password" id="confirmPassword" class="form-control w-25" placeholder="Confirm Password">
         </div>
 
-        <div class="mb-3">
-            <label for="skillLevel" class="form-label">Experience Level:</label>
-            <input type="text" th:field="*{skillLevel}" class="form-control w-25" id="skillLevel" placeholder="Skill Level">
-        </div>
+
 
         <div class="mb-3">
-            <label for="playStyle" class="form-label">Play Style :</label>
-            <input type="text" th:field="*{playStyle}" class="form-control w-25" id="playStyle" placeholder="Play Style">
+            <label for="skillLevel" class="form-label">Experience Level:</label>
+            <br>
+            <div class="form-check form-check-inline">
+                <th:block th:each="skillLevel : ${skillLevels}">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="skillLevel"
+                               id="skillLevel" th:value="${skillLevel}" th:text="${skillLevel}"
+                               th:checked="${player.skillLevel == skillLevel}">
+                        <label class="form-check-label" for="skillLevel"> </label>
+                    </div>
+                </th:block>
+            </div>
+        </div>
+
+            <div class="mb-3">
+                <label for="playStyle" class="form-label">Play Style:</label>
+                <br>
+                <div class="form-check form-check-inline">
+                    <th:block th:each="playStyle : ${playStyles}">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="playStyle"
+                                   id="playStyle" th:value="${playStyle}" th:text="${playStyle}"
+                                   th:checked="${player.playStyle == playStyle}">
+                            <label class="form-check-label" for="playStyle"> </label>
+                        </div>
+                    </th:block>
+                </div>
+
         </div>
 
         <div class="mb-3">
             <label for="preferredGameType" class="form-label">Preferred Game Type:</label>
-            <input type="text" th:field="*{preferredGameType}" class="form-control w-25" id="preferredGameType" placeholder="Preferred Game Type">
+            <br>
+            <div class="form-check form-check-inline">
+                <th:block th:each="preferredGameType : ${preferredGameTypes}">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="preferredGameType"
+                               id="preferredGameType" th:value="${preferredGameType}" th:text="${preferredGameType}"
+                               th:checked="${preselectedGameTypes != null ? preselectedGameTypes.contains(preferredGameType) : false}">
+                        <label class="form-check-label" for="preferredGameType"> </label>
+                    </div>
+                </th:block>
+            </div>
+
         </div>
+
 
         <button type="submit" class="btn btn-warning col-2">Save</button>
 

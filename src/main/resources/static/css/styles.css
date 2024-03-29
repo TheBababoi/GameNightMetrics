@@ -3,6 +3,12 @@ body {
     font-family: 'Merriweather', serif;  /* Serif font for a classic feel */
 }
 
+.form-check {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 10px; /* Optional: Add margin between the options */
+}
+
 .display-4 {
     font-weight: bold;
     color: #333;  /* Darker heading color */

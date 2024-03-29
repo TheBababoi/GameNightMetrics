@@ -1,5 +1,6 @@
 package com.methodus.gamenightmetricsapp.controller;
 
+import com.methodus.gamenightmetricsapp.config.PlayerConfig;
 import com.methodus.gamenightmetricsapp.entity.Player;
 import com.methodus.gamenightmetricsapp.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -14,11 +18,14 @@ import java.util.List;
 @RequestMapping("/players")
 public class PlayerController {
     private PlayerService playerService;
-    @Autowired
-    public PlayerController(PlayerService playerService) {
-        this.playerService = playerService;
-    }
 
+    private PlayerConfig playerConfig;
+
+    @Autowired
+    public PlayerController(PlayerService playerService, PlayerConfig playerConfig) {
+        this.playerService = playerService;
+        this.playerConfig = playerConfig;
+    }
     @GetMapping("/list")
     public String listOfPlayers(Model model){
         //get the list of players from th db
@@ -33,6 +40,9 @@ public class PlayerController {
         Player player = new Player();
         // add to the spring model
         model.addAttribute(player);
+        model.addAttribute("skillLevels", playerConfig.SKILL_LEVELS);
+        model.addAttribute("preferredGameTypes", playerConfig.GAME_TYPES);
+        model.addAttribute("playStyles", playerConfig.PLAYER_TYPES);
 
         return "players/player-form";
 
@@ -44,6 +54,27 @@ public class PlayerController {
         Player player = playerService.findById(id);
         //set player in the model to precalculate the form
         model.addAttribute("player",player);
+        model.addAttribute("skillLevels", playerConfig.SKILL_LEVELS);
+        model.addAttribute("preferredGameTypes", playerConfig.GAME_TYPES);
+        model.addAttribute("playStyles", playerConfig.PLAYER_TYPES);
+
+
+        // Pre-selected game types (split into a list)
+        List<String> preselectedGameTypes = Collections.singletonList(player.getPreferredGameType());
+        if (preselectedGameTypes.get(0) != null) {
+            // Safe to split here
+            preselectedGameTypes = Arrays.asList(preselectedGameTypes.get(0).split(","));
+        } else {
+            preselectedGameTypes = new ArrayList<>();  // Initialize empty list if null
+        }
+
+        // Print the preselectedGameTypes list for verification
+        System.out.println("Preselected Game Types: " + preselectedGameTypes);
+
+        model.addAttribute("preselectedGameTypes", preselectedGameTypes);
+
+
+
         //send over the form
         return "players/player-form";
     }

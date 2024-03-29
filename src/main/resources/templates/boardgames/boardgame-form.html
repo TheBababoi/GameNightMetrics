@@ -24,19 +24,48 @@
             <label for="name" class="form-label">Title:</label>
             <input type="text" th:field="*{name}" class="form-control w-25" id="name" placeholder="Title">
         </div>
+
         <div class="mb-3">
             <label for="gameType" class="form-label">Game Type:</label>
-            <input type="text" th:field="*{gameType}" class="form-control w-25" id="gameType" placeholder="Game Type">
+            <br>
+            <div class="form-check form-check-inline">
+                <th:block th:each="gameType : ${gameTypes}">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="gameType"
+                               id="gameType" th:value="${gameType}" th:text="${gameType}"
+                               th:checked="${preselectedGameTypes != null ? preselectedGameTypes.contains(gameType) : false}">
+                        <label class="form-check-label" for="gameType"> </label>
+                    </div>
+                </th:block>
+            </div>
+
         </div>
+
+
 
         <div class="mb-3">
             <label for="minPlayers" class="form-label">Minimum Players:</label>
-            <input type="text" th:field="*{minPlayers}" class="form-control w-25" id="minPlayers" placeholder="0">
+            <select th:field="*{minPlayers}" class="form-select w-25" id="minPlayers">
+                <option th:each="playerNumber : ${playerNumbers}"
+                        th:value="${playerNumber}"
+                        th:text="${playerNumber}"
+                        th:selected="${boardgame.getMinPlayers() == playerNumber}">
+                </option>
+            </select>
         </div>
+
+
+
 
         <div class="mb-3">
             <label for="maxPlayers" class="form-label">Maximum Players:</label>
-            <input type="text" th:field="*{maxPlayers}" class="form-control w-25" id="maxPlayers" placeholder="0">
+            <select th:field="*{maxPlayers}" class="form-select w-25" id="maxPlayers">
+                <option th:each="playerNumber : ${playerNumbers}"
+                        th:value="${playerNumber}"
+                        th:text="${playerNumber}"
+                        th:selected="${boardgame.getMaxPlayers() == playerNumber}">
+                </option>
+            </select>
         </div>
 
 
