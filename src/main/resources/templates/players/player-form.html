@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Save Player</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+</head>
+<body>
+
+<div class="container">  <h3>Player Form</h3>
+    <hr class="border">  <p class="h4 mb-4">Save Player</p>
+
+    <form action="#" th:action="@{/players/save}"
+          th:object="${player}" method="POST" onsubmit="return validatePasswords()">
+
+        <input type="hidden" th:field="*{id}" />
+
+        <div class="mb-3">
+            <label for="username" class="form-label">Username:</label>
+            <input type="text" th:field="*{username}" class="form-control w-25" id="username" placeholder="Username">
+        </div>
+
+        <div class="mb-3">
+            <label for="password" class="form-label">Password:</label>
+            <input type="password" th:field="*{password}" class="form-control w-25" id="password" placeholder="Password">
+        </div>
+
+        <div class="mb-3">
+            <label for="confirmPassword" class="form-label">Confirm Password:</label>
+            <input type="password" id="confirmPassword" class="form-control w-25" placeholder="Confirm Password">
+        </div>
+
+        <div class="mb-3">
+            <label for="skillLevel" class="form-label">Experience Level:</label>
+            <input type="text" th:field="*{skillLevel}" class="form-control w-25" id="skillLevel" placeholder="Skill Level">
+        </div>
+
+        <div class="mb-3">
+            <label for="playStyle" class="form-label">Play Style :</label>
+            <input type="text" th:field="*{playStyle}" class="form-control w-25" id="playStyle" placeholder="Play Style">
+        </div>
+
+        <div class="mb-3">
+            <label for="preferredGameType" class="form-label">Preferred Game Type:</label>
+            <input type="text" th:field="*{preferredGameType}" class="form-control w-25" id="preferredGameType" placeholder="Preferred Game Type">
+        </div>
+
+        <button type="submit" class="btn btn-warning col-2">Save</button>
+
+        <hr class="border">  <a th:href="@{/players/list}">Back to Players List</a>
+
+    </form>
+
+</div>
+
+<script>
+    function validatePasswords() {
+        var password = document.getElementById("password").value;
+        var confirmPassword = document.getElementById("confirmPassword").value;
+        if (password !== confirmPassword) {
+            alert("Passwords do not match! Please re-enter your password.");
+            return false;
+        }
+        return true;
+    }
+</script>
+
+</body>
+</html>

@@ -35,7 +35,7 @@ public class BoardGameController {
 
         BoardGame boardGame = new BoardGame();
         // add to the spring model
-        model.addAttribute(boardGame);
+        model.addAttribute("boardgame",boardGame);
 
         return "boardgames/boardgame-form";
 
@@ -52,7 +52,7 @@ public class BoardGameController {
     }
 
     @GetMapping("/delete")
-    public String delete(@RequestParam("playerId") int id){
+    public String delete(@RequestParam("boardgameId") int id){
         // delete the boardgame
         boardGameService.deleteById(id);
         //redirect to the /boardgames/list
