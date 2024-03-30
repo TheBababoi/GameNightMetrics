@@ -19,7 +19,7 @@ public class SecurityConfig {
     public DaoAuthenticationProvider authenticationProvider(PlayerService playerService) {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setUserDetailsService(playerService); //set the custom user details service
-        daoAuthenticationProvider.setPasswordEncoder(bCryptPasswordEncoder()); //set the password encoder - bcrypt
+        daoAuthenticationProvider.setPasswordEncoder(bCryptPasswordEncoder()); //set the password encoder  bcrypt
         return daoAuthenticationProvider;
     }
 
