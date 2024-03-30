@@ -2,8 +2,10 @@ package com.methodus.gamenightmetricsapp.entity;
 
 import jakarta.persistence.*;
 
+import java.util.Collection;
+
 @Entity
-@Table(name ="players")
+@Table(name ="player")
 public class Player {
 
     // define fields
@@ -21,8 +23,13 @@ public class Player {
     private String playStyle;
     @Column(name="preferred_game_type")
     private String preferredGameType;
-    @Column(name="role_id")
-    private String roleID;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "players_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Collection<Role> roles;
+
 
     // define constructs
 
@@ -36,6 +43,15 @@ public class Player {
         this.skillLevel = skillLevel;
         this.playStyle = playStyle;
         this.preferredGameType = preferredGameType;
+    }
+
+    public Player(String username, String password, String skillLevel, String playStyle, String preferredGameType, Collection<Role> roles) {
+        this.username = username;
+        this.password = password;
+        this.skillLevel = skillLevel;
+        this.playStyle = playStyle;
+        this.preferredGameType = preferredGameType;
+        this.roles = roles;
     }
 
     // define getters/setters
@@ -89,12 +105,12 @@ public class Player {
         this.preferredGameType = preferredGameType;
     }
 
-    public String getRoleID() {
-        return roleID;
+    public Collection<Role> getRoles() {
+        return roles;
     }
 
-    public void setRoleID(String roleID) {
-        this.roleID = roleID;
+    public void setRoles(Collection<Role> roles) {
+        this.roles = roles;
     }
 
     // define toString
@@ -109,7 +125,6 @@ public class Player {
                 ", skillLevel='" + skillLevel + '\'' +
                 ", playStyle='" + playStyle + '\'' +
                 ", preferredGameType='" + preferredGameType + '\'' +
-                ", roleID='" + roleID + '\'' +
                 '}';
     }
 }

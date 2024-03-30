@@ -10,7 +10,7 @@ import java.util.Optional;
 @Service
 public class BoardGameServiceImpl implements BoardGameService {
     private BoardGameRepository boardGameRepository;
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+
     @Autowired
     public BoardGameServiceImpl(BoardGameRepository boardGameRepository) {
         this.boardGameRepository = boardGameRepository;
@@ -18,7 +18,7 @@ public class BoardGameServiceImpl implements BoardGameService {
 
     @Override
     public List<BoardGame> findAll() {
-        return (List<BoardGame>) boardGameRepository.findAllByOrderByNameAsc();
+        return boardGameRepository.findAllByOrderByNameAsc();
     }
 
     @Override

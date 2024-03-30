@@ -3,7 +3,7 @@ package com.methodus.gamenightmetricsapp.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name="boardgames")
+@Table(name="boardgame")
 public class BoardGame {
 
     // define fields

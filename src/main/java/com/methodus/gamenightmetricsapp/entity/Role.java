@@ -3,7 +3,7 @@ package com.methodus.gamenightmetricsapp.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "roles")
+@Table(name = "role")
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -11,13 +11,13 @@ public class Role {
     private int id;
 
     @Column(name = "name")
-    private String Name;
+    private String name;
 
     public Role() {
     }
 
     public Role(String name) {
-        Name = name;
+        this.name = name;
     }
 
     public int getId() {
@@ -29,18 +29,18 @@ public class Role {
     }
 
     public String getName() {
-        return Name;
+        return name;
     }
 
     public void setName(String name) {
-        Name = name;
+        this.name = name;
     }
 
     @Override
     public String toString() {
         return "Role{" +
                 "id=" + id +
-                ", Name='" + Name + '\'' +
+                ", Name='" + name + '\'' +
                 '}';
     }
 }
