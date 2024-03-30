@@ -3,6 +3,8 @@ package com.methodus.gamenightmetricsapp.service;
 import com.methodus.gamenightmetricsapp.dao.PlayerRepository;
 import com.methodus.gamenightmetricsapp.entity.Player;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -43,5 +45,16 @@ public class PlayerServiceImpl implements PlayerService{
     @Override
     public void deleteById(int id) {
         playerRepository.deleteById(id);
+    }
+
+    @Override
+    public Player findByPlayerName(String userName) {
+        return null;
+    }
+
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return null;
     }
 }
