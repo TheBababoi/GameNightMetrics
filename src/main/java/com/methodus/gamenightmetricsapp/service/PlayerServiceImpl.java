@@ -56,6 +56,7 @@ public class PlayerServiceImpl implements PlayerService{
             //set player role to user
             player.setRoles(Collections.singletonList(roleRepository.findRoleByName("ROLE_USER")));
         }
+        player.setPassword(bCryptPasswordEncoder.encode(player.getPassword()));
         return playerRepository.save(player);
     }
 

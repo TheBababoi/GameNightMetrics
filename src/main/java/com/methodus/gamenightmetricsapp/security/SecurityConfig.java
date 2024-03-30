@@ -26,6 +26,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationSuccessHandler
             customAuthenticationSuccessHandler) throws Exception {
+
+        http.authorizeHttpRequests(authorize -> authorize.requestMatchers("/css/**", "/images/**", "/js/**").permitAll());
         http.authorizeHttpRequests(configurer ->
                         configurer
                                 .requestMatchers("/").permitAll()
@@ -41,7 +43,7 @@ public class SecurityConfig {
                 .logout(logout ->
                         logout
                                 .permitAll()
-                                .logoutSuccessUrl("/"))
+                                .logoutSuccessUrl("/?logout=true"))
                 .exceptionHandling(configurer ->
                         configurer.accessDeniedPage("/access-denied")
                 );

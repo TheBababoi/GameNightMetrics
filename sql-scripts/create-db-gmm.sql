@@ -28,7 +28,8 @@ preferred_game_type VARCHAR(255),  -- Comma separated list of game types (e.g., 
 total_games_played INT DEFAULT 0
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
-
+INSERT INTO Player (username, password, skill_level, play_style, preferred_game_type)
+VALUES ('d', '$2a$04$eFytJDGtjbThXa80FyOOBuFdK2IwjyWefYkMpiBEFlpBwDH.5PM0K', 'Beginner', 'Balanced,Strategic', 'RPG,BoardGame');
 
 -- Create Board Games table
 CREATE TABLE BoardGame (

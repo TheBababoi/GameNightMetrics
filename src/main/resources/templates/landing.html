@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameNight Metrics</title>
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+</head>
+<body>
+<div class="container" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+    <!-- Check if logout parameter is present in URL -->
+    <!-- Check if logout parameter is present in URL -->
+    <div th:if="${param.logout}">
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            You have been successfully logged out.
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </div>
+    <h1 class="display-4 mb-5">Greetings Traveler, Welcome to GameNight Metrics!</h1>
+    <a th:href="@{/home}" class="btn btn-warning btn-lg">Seek Access</a>
+</div>
+</body>
+</html>
