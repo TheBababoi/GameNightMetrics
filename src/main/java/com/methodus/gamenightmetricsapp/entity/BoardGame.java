@@ -21,7 +21,7 @@ public class BoardGame {
     private String minPlayers;
 
 
-    // define constructs
+    // define constructors
 
     public BoardGame() {
     }

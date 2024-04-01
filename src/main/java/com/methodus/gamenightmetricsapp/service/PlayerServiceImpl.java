@@ -2,6 +2,7 @@ package com.methodus.gamenightmetricsapp.service;
 
 import com.methodus.gamenightmetricsapp.dao.PlayerRepository;
 import com.methodus.gamenightmetricsapp.dao.RoleRepository;
+import com.methodus.gamenightmetricsapp.entity.DtoPlayer;
 import com.methodus.gamenightmetricsapp.entity.Player;
 import com.methodus.gamenightmetricsapp.entity.Role;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,16 +50,32 @@ public class PlayerServiceImpl implements PlayerService{
     }
 
     @Override
-    public Player save(Player player) {
+    public Player save(DtoPlayer dtoPlayer) {
+        Player player;
+        //check to see if the player gets updated or if added for the first time
+        //if updated he will have an id
+        if (dtoPlayer.getId()==0){
+            player = new Player();}
+        else {
+            player = findById(dtoPlayer.getId());
+            System.out.println(player.getId());
+        }
+
+        //transfer the data back to the entity
+        player.setUsername(dtoPlayer.getUsername());
+        player.setPassword(bCryptPasswordEncoder.encode((dtoPlayer.getPassword())));
+        player.setPlayStyle(dtoPlayer.getPlayStyle());
+        player.setSkillLevel(dtoPlayer.getSkillLevel());
+        player.setPreferredGameType(dtoPlayer.getPreferredGameType());
         //check if the player does not have roles
         if (player.getRoles()==null){
-            System.out.println("hell yeah");
             //set player role to user
             player.setRoles(Collections.singletonList(roleRepository.findRoleByName("ROLE_USER")));
         }
-        player.setPassword(bCryptPasswordEncoder.encode(player.getPassword()));
         return playerRepository.save(player);
+
     }
+
 
     @Override
     public void deleteById(int id) {

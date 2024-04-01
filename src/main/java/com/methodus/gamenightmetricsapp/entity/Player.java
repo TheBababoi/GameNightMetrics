@@ -1,6 +1,8 @@
 package com.methodus.gamenightmetricsapp.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.util.Collection;
 
@@ -13,8 +15,10 @@ public class Player {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
+
     @Column(name="username")
     private String username;
+
     @Column(name="password")
     private String password;
     @Column(name="skill_level")
@@ -31,7 +35,7 @@ public class Player {
     private Collection<Role> roles;
 
 
-    // define constructs
+    // define constructors
 
 
     public Player() {
