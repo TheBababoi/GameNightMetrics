@@ -35,7 +35,7 @@ CREATE TABLE Player (
 
 -- Insert a sample player
 INSERT INTO Player (username, password, skill_level, play_style, preferred_game_type)
-VALUES ('d', '$2a$04$eFytJDGtjbThXa80FyOOBuFdK2IwjyWefYkMpiBEFlpBwDH.5PM0K', 'Beginner', 'Balanced,Strategic', 'RPG,BoardGame');
+VALUES ('Methodus', '$2a$12$HRqFg5UzUpg4E3Th.a07geTjhm6xfKu0rOc.EG5j.qnAq8lUMEJ/W', 'skill_level_here', 'play_style_here', 'preferred_game_type_here');
 
 -- Create Board Games table
 CREATE TABLE BoardGame (
@@ -47,6 +47,7 @@ CREATE TABLE BoardGame (
   total_games_played INT DEFAULT 0
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
+
 -- Create Junction Table (PlayerGameStats) for player statistics
 CREATE TABLE PlayerGameStats (
   player_id INT NOT NULL,
@@ -56,7 +57,7 @@ CREATE TABLE PlayerGameStats (
   plays INT DEFAULT 0,
   win_loss_ratio DECIMAL(5,2) DEFAULT 0.00,
   FOREIGN KEY (player_id) REFERENCES Player(id)
-    ON DELETE NO ACTION ON UPDATE NO ACTION,  -- Prevent deleting player with referenced stats
+    ON DELETE CASCADE ON UPDATE NO ACTION,  -- Cascade deletion of player's stats
   FOREIGN KEY (game_id) REFERENCES BoardGame(id)
     ON DELETE NO ACTION ON UPDATE NO ACTION,  -- Prevent deleting game with referenced stats
   PRIMARY KEY (player_id, game_id),
@@ -74,6 +75,16 @@ CREATE TABLE players_roles (
   CONSTRAINT fk_players_roles_role_id FOREIGN KEY (role_id) REFERENCES Role(id)
     ON DELETE NO ACTION ON UPDATE NO ACTION   -- Prevent deleting role with assigned players
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Select the id of the sample player
+SELECT id INTO @playerId FROM Player WHERE username = 'Methodus';
+
+-- Insert roles for the sample player
+INSERT INTO players_roles (user_id, role_id)
+VALUES (@playerId, (SELECT id FROM Role WHERE name = 'ROLE_USER'));
+
+INSERT INTO players_roles (user_id, role_id)
+VALUES (@playerId, (SELECT id FROM Role WHERE name = 'ROLE_ADMIN'));
 
 -- Enable foreign key checks for data integrity
 SET FOREIGN_KEY_CHECKS = 1;

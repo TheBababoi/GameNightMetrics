@@ -1,6 +1,7 @@
 package com.methodus.gamenightmetricsapp.security;
 
 import com.methodus.gamenightmetricsapp.service.PlayerService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -31,8 +32,11 @@ public class SecurityConfig {
         http.authorizeHttpRequests(configurer ->
                         configurer
                                 .requestMatchers("/").permitAll()
-                                .requestMatchers("/players/showFormForAdd").permitAll()
+                                .requestMatchers("/players/showFormForRegister").permitAll()
                                 .requestMatchers("/players/save").permitAll()
+                                .requestMatchers("/players/save").permitAll()
+                                .requestMatchers("/boardgames/showFormForAdd").hasRole("ADMIN")
+                                .requestMatchers("/players/showFormForAdd").hasRole("ADMIN")
                                 .anyRequest().authenticated()
                 )
                 .formLogin(form ->

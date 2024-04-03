@@ -5,7 +5,10 @@ import com.methodus.gamenightmetricsapp.dao.RoleRepository;
 import com.methodus.gamenightmetricsapp.entity.DtoPlayer;
 import com.methodus.gamenightmetricsapp.entity.Player;
 import com.methodus.gamenightmetricsapp.entity.Role;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authorization.AuthorizationManager;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -86,6 +89,7 @@ public class PlayerServiceImpl implements PlayerService{
     public Player findByPlayerName(String userName) {
         return playerRepository.findPlayerByUsername(userName);
     }
+
 
 
     @Override

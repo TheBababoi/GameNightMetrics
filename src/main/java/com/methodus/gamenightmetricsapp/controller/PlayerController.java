@@ -4,6 +4,7 @@ import com.methodus.gamenightmetricsapp.config.PlayerConfig;
 import com.methodus.gamenightmetricsapp.entity.DtoPlayer;
 import com.methodus.gamenightmetricsapp.entity.Player;
 import com.methodus.gamenightmetricsapp.service.PlayerService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,8 @@ import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -62,31 +65,41 @@ public class PlayerController {
 
     }
 
+    @GetMapping("/showFormForRegister")
+    public String showFormForRegister(Model model) {
+
+        model.addAttribute("player",new DtoPlayer());
+        model.addAttribute("skillLevels", playerConfig.SKILL_LEVELS);
+        model.addAttribute("preferredGameTypes", playerConfig.GAME_TYPES);
+        model.addAttribute("playStyles", playerConfig.PLAYER_TYPES);
+
+        return "players/player-form";
+
+    }
+
     @GetMapping("/showFormForUpdate")
     public String showFormForUpdate(@RequestParam("playerId") int id, Model model){
         // get the player from the service
         Player player = playerService.findById(id);
-        //transfer the data to the dto
-        DtoPlayer dtoPlayer = new DtoPlayer();
-        transferData(player, dtoPlayer);
-        //set player in the model to precalculate the form
-
-        model.addAttribute("player", dtoPlayer);
-        addData(model);
-
-
-        // Pre-selected game types (split into a list)
-        List<String> preselectedGameTypes = Collections.singletonList(player.getPreferredGameType());
-        if (preselectedGameTypes.get(0) != null) {
-            // Safe to split here
-            preselectedGameTypes = Arrays.asList(preselectedGameTypes.get(0).split(","));
-        } else {
-            preselectedGameTypes = new ArrayList<>();  // Initialize empty list if null
-        }
-
-        model.addAttribute("preselectedGameTypes", preselectedGameTypes);
+        doUpdate(player,model);
 
         //send over the form
+        return "players/player-form";
+    }
+
+    @GetMapping("/showFormForCurrentUserUpdate")
+    public String showFormForCurrentUserUpdate(HttpServletRequest request, Model model){
+        // Retrieve the player object from the session
+        Player player = (Player) request.getSession().getAttribute("player");
+
+        if (player != null) {
+            System.out.println(player);
+            // Call your update method with the retrieved player
+            doUpdate(player, model);
+        } else {
+            // Handle case where player is not found in the session
+        }
+
         return "players/player-form";
     }
 
@@ -126,7 +139,11 @@ public class PlayerController {
         playerService.save(dtoPlayer);
 
         // place player in the web http session for later use
-        session.setAttribute("player",player);
+        Player loggedInPlayer = (Player) session.getAttribute("player");
+        if (dtoPlayer.getId() == loggedInPlayer.getId()) {
+            // DTO player ID matches the logged-in player ID
+            session.setAttribute("player", playerService.findById(dtoPlayer.getId()));}
+
 
         //check if its a registering user or not
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -164,6 +181,29 @@ public class PlayerController {
         model.addAttribute("playStyles", playerConfig.PLAYER_TYPES);
     }
 
+    private void doUpdate(Player player, Model model){
+        //transfer the data to the dto
+        DtoPlayer dtoPlayer = new DtoPlayer();
+        transferData(player, dtoPlayer);
+        //set player in the model to precalculate the form
+
+        model.addAttribute("player", dtoPlayer);
+        addData(model);
+
+
+        // Pre-selected game types (split into a list)
+        List<String> preselectedGameTypes = Collections.singletonList(player.getPreferredGameType());
+        if (preselectedGameTypes.get(0) != null) {
+            // Safe to split here
+            preselectedGameTypes = Arrays.asList(preselectedGameTypes.get(0).split(","));
+        } else {
+            preselectedGameTypes = new ArrayList<>();  // Initialize empty list if null
+        }
+
+        model.addAttribute("preselectedGameTypes", preselectedGameTypes);
+
+
+    }
 
 
 

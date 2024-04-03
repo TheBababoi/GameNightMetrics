@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.springframework.org/schema/security">
 <head>
     <meta charset="UTF-8">
     <title>GameNight Metrics</title>
@@ -10,7 +11,7 @@
     <link rel="stylesheet" th:href="@{/css/styles.css}"/>
 
 
-    ""
+
 </head>
 <body>
 
@@ -21,6 +22,10 @@
 
     <a th:href="@{/players/showFormForAdd}" class="btn btn-secondary btn-lg mb-3 float-end">
         Summon New Companion
+    </a>
+
+    <a th:href="@{/players/showFormForCurrentUserUpdate}" class="btn btn-secondary btn-lg mb-3 float-start">
+        Edit My Character Sheet
     </a>
 
 
@@ -43,14 +48,15 @@
             <td th:text="${player.playStyle}"></td>
             <td th:text="${player.preferredGameType}"></td>
             <td>
+                <div sec:authorize="hasRole('ADMIN')">
                 <a th:href="@{/players/showFormForUpdate(playerId=${player.id})}" class="btn btn-warning btn-sm">
                     Edit Entry
-                </a>
-
+                </a></div>
+                <div sec:authorize="hasRole('ADMIN')">
                 <a th:href="@{/players/delete(playerId=${player.id})}" class="btn btn-danger btn-sm"
                    onclick="if (!(confirm('Are you sure you want to banish this player?'))) return false">
                     Banish
-                </a>
+                </a></div>
 
             </td>
 
@@ -58,6 +64,11 @@
         </tr>
         </tbody>
     </table>
+
+    <a th:href="@{/home}" class="text-decoration-none float-end" style="font-size: 1.2em;">
+        Back to Base
+    </a>
+
 
 </div>
 
