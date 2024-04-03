@@ -52,8 +52,8 @@ public class PlayerServiceImpl implements PlayerService{
     @Override
     public Player save(DtoPlayer dtoPlayer) {
         Player player;
-        //check to see if the player gets updated or if added for the first time
-        //if updated he will have an id
+        //check if new player or player update
+        //if update he will already have id
         if (dtoPlayer.getId()==0){
             player = new Player();}
         else {

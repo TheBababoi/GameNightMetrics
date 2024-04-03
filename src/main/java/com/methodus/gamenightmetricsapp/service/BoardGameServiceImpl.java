@@ -2,9 +2,12 @@ package com.methodus.gamenightmetricsapp.service;
 
 import com.methodus.gamenightmetricsapp.dao.BoardGameRepository;
 import com.methodus.gamenightmetricsapp.entity.BoardGame;
+import com.methodus.gamenightmetricsapp.entity.DtoBoardGame;
+import com.methodus.gamenightmetricsapp.entity.Player;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 @Service
@@ -36,12 +39,33 @@ public class BoardGameServiceImpl implements BoardGameService {
     }
 
     @Override
-    public BoardGame save(BoardGame boardGame) {
+    public BoardGame save(DtoBoardGame dtoBoardGame) {
+        BoardGame boardGame;
+        //check if new boardgame or boardgame update
+        //if update it will already have id
+        if (dtoBoardGame.getId()==0){
+            boardGame = new BoardGame();}
+        else {
+            boardGame = findById(dtoBoardGame.getId());
+        }
+
+        //transfer the data back to the entity
+       boardGame.setName(dtoBoardGame.getName());
+       boardGame.setGameType(dtoBoardGame.getGameType());
+       boardGame.setMinPlayers(dtoBoardGame.getMinPlayers());
+       boardGame.setMaxPlayers(dtoBoardGame.getMaxPlayers());
+
         return boardGameRepository.save(boardGame);
     }
+
 
     @Override
     public void deleteById(int id) {
         boardGameRepository.deleteById(id);
+    }
+
+    @Override
+    public BoardGame findByBoardGameName(String name) {
+        return boardGameRepository.findBoardGameByName(name);
     }
 }

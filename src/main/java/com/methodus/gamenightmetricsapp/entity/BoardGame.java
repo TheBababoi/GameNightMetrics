@@ -16,9 +16,9 @@ public class BoardGame {
     @Column(name="game_type")
     private String gameType;
     @Column(name="number_of_max_players")
-    private String maxPlayers;
+    private int maxPlayers;
     @Column(name="number_of_min_players")
-    private String minPlayers;
+    private int minPlayers;
 
 
     // define constructors
@@ -26,7 +26,7 @@ public class BoardGame {
     public BoardGame() {
     }
 
-    public BoardGame(String name, String gameType, String maxPlayers, String minPlayers) {
+    public BoardGame(String name, String gameType, int maxPlayers, int minPlayers) {
         this.name = name;
         this.gameType = gameType;
         this.maxPlayers = maxPlayers;
@@ -59,19 +59,19 @@ public class BoardGame {
         this.gameType = gameType;
     }
 
-    public String getMaxPlayers() {
+    public int getMaxPlayers() {
         return maxPlayers;
     }
 
-    public void setMaxPlayers(String maxPlayers) {
+    public void setMaxPlayers(int maxPlayers) {
         this.maxPlayers = maxPlayers;
     }
 
-    public String getMinPlayers() {
+    public int getMinPlayers() {
         return minPlayers;
     }
 
-    public void setMinPlayers(String minPlayers) {
+    public void setMinPlayers(int minPlayers) {
         this.minPlayers = minPlayers;
     }
 

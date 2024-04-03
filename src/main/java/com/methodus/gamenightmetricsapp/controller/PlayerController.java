@@ -8,6 +8,9 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -81,12 +84,7 @@ public class PlayerController {
             preselectedGameTypes = new ArrayList<>();  // Initialize empty list if null
         }
 
-        // Print the preselectedGameTypes list for verification
-        System.out.println("Preselected Game Types: " + preselectedGameTypes);
-
         model.addAttribute("preselectedGameTypes", preselectedGameTypes);
-
-
 
         //send over the form
         return "players/player-form";
@@ -99,6 +97,7 @@ public class PlayerController {
         //redirect to the /players/list
         return "redirect:/players/list";
     }
+
     @PostMapping("/save")
     public String savePlayer(@Valid @ModelAttribute("player") DtoPlayer dtoPlayer,
                              BindingResult bindingResult,
@@ -129,8 +128,17 @@ public class PlayerController {
         // place player in the web http session for later use
         session.setAttribute("player",player);
 
-        //redirect to prevent duplicate submissions
-        return "redirect:/home";
+        //check if its a registering user or not
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
+            // Registering user or anonymous user
+            return "registration-confirmation";
+        } else {
+            // Logged-in user
+            return "redirect:/players/list";
+        }
+
+
     }
 
     @InitBinder
@@ -155,6 +163,10 @@ public class PlayerController {
         model.addAttribute("preferredGameTypes", playerConfig.GAME_TYPES);
         model.addAttribute("playStyles", playerConfig.PLAYER_TYPES);
     }
+
+
+
+
 }
 
 

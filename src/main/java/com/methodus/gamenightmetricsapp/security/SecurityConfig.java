@@ -31,6 +31,8 @@ public class SecurityConfig {
         http.authorizeHttpRequests(configurer ->
                         configurer
                                 .requestMatchers("/").permitAll()
+                                .requestMatchers("/players/showFormForAdd").permitAll()
+                                .requestMatchers("/players/save").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .formLogin(form ->

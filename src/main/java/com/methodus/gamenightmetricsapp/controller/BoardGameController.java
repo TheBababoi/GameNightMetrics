@@ -2,22 +2,35 @@ package com.methodus.gamenightmetricsapp.controller;
 
 import com.methodus.gamenightmetricsapp.config.BoardGameConfig;
 import com.methodus.gamenightmetricsapp.entity.BoardGame;
+import com.methodus.gamenightmetricsapp.entity.DtoBoardGame;
+import com.methodus.gamenightmetricsapp.entity.Player;
 import com.methodus.gamenightmetricsapp.service.BoardGameService;
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Controller
 @RequestMapping("/boardgames")
 public class BoardGameController {
     private BoardGameService boardGameService;
     private BoardGameConfig boardGameConfig;
+    private Logger logger = Logger.getLogger(getClass().getName());
 
     @Autowired
     public BoardGameController(BoardGameService boardGameService, BoardGameConfig boardGameConfig) {
@@ -38,9 +51,7 @@ public class BoardGameController {
     @GetMapping("/showFormForAdd")
     public String showFormForAdd(Model model) {
 
-        BoardGame boardGame = new BoardGame();
-        // add to the spring model
-        model.addAttribute("boardgame",boardGame);
+        model.addAttribute("boardgame",new DtoBoardGame());
         model.addAttribute("gameTypes",boardGameConfig.GAME_TYPES);
         model.addAttribute("playerNumbers",boardGameConfig.PLAYER_NUMBERS);
 
@@ -52,8 +63,15 @@ public class BoardGameController {
     public String showFormForUpdate(@RequestParam("boardgameId") int id, Model model){
         // get the boardgame from the service
         BoardGame boardGame = boardGameService.findById(id);
+        //transfer the data to the dto
+        DtoBoardGame dtoBoardGame = new DtoBoardGame();
+        dtoBoardGame.setId(boardGame.getId());
+        dtoBoardGame.setName(boardGame.getName());
+        dtoBoardGame.setGameType(boardGame.getGameType());
+        dtoBoardGame.setMaxPlayers(boardGame.getMaxPlayers());
+        dtoBoardGame.setMinPlayers(boardGame.getMinPlayers());
         //set boardgame in the model to precalculate the form
-        model.addAttribute("boardgame",boardGame);
+        model.addAttribute("boardgame",dtoBoardGame);
         model.addAttribute("gameTypes",boardGameConfig.GAME_TYPES);
         model.addAttribute("playerNumbers",boardGameConfig.PLAYER_NUMBERS);
 
@@ -84,11 +102,55 @@ public class BoardGameController {
         return "redirect:/boardgames/list";
     }
     @PostMapping("/save")
-    public String saveBoardGame(@ModelAttribute("boardgame") BoardGame boardGame){
-        //save the boardgame
-        boardGameService.save(boardGame);
+    public String saveBoardGame(@Valid @ModelAttribute("boardgame") DtoBoardGame dtoBoardGame, BindingResult bindingResult,
+                                Model model) {
+        logger.info("Processing Player form for: " + dtoBoardGame.getName());
 
-        //redirect to prevent duplicate submissions
-        return "redirect:/boardgames/list";
+        // form validation
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("gameTypes", boardGameConfig.GAME_TYPES);
+            model.addAttribute("playerNumbers", boardGameConfig.PLAYER_NUMBERS);
+            return "noardgames/boardgame-form";
+        }
+
+        //check if the minimum players are >= max players
+        if (dtoBoardGame.getMinPlayers()>=dtoBoardGame.getMaxPlayers()){
+            model.addAttribute("boardgame", dtoBoardGame);
+            model.addAttribute("gameTypes", boardGameConfig.GAME_TYPES);
+            model.addAttribute("playerNumbers", boardGameConfig.PLAYER_NUMBERS);
+            model.addAttribute("formError", "Minimum players are more than the maximum.");
+
+            logger.warning("Minimum players are more than the maximum.");
+            return "boardgames/boardgame-form";
+        }
+
+        // check the database if name already exists
+        BoardGame boardGame = boardGameService.findByBoardGameName(dtoBoardGame.getName());
+
+        if ((boardGame != null) && (boardGame.getId() != dtoBoardGame.getId())) {
+            model.addAttribute("boardgame", dtoBoardGame);
+            model.addAttribute("gameTypes", boardGameConfig.GAME_TYPES);
+            model.addAttribute("playerNumbers", boardGameConfig.PLAYER_NUMBERS);
+            model.addAttribute("formError", "Board Game name already exists.");
+
+            logger.warning("Board game name already exists.");
+            return "boardgames/boardgame-form";
+        }
+
+        //save the boardgame
+        boardGameService.save(dtoBoardGame);
+            return "redirect:/boardgames/list";
     }
+
+
+
+
+    @InitBinder
+    public void initBinder(WebDataBinder webDataBinder) {
+
+        StringTrimmerEditor stringTrimmerEditor = new StringTrimmerEditor(true);
+
+        webDataBinder.registerCustomEditor(String.class, stringTrimmerEditor);
+    }
+
 }
