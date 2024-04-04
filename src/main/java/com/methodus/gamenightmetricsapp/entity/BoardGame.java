@@ -2,6 +2,8 @@ package com.methodus.gamenightmetricsapp.entity;
 
 import jakarta.persistence.*;
 
+import java.util.Collection;
+
 @Entity
 @Table(name="boardgame")
 public class BoardGame {
@@ -21,6 +23,13 @@ public class BoardGame {
     private int minPlayers;
 
 
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "PlayerGameStats",
+            joinColumns = @JoinColumn(name = "game_id"),
+            inverseJoinColumns = @JoinColumn(name = "player_id"))
+    private Collection<Player> players;
+
+
     // define constructors
 
     public BoardGame() {
@@ -32,6 +41,8 @@ public class BoardGame {
         this.maxPlayers = maxPlayers;
         this.minPlayers = minPlayers;
     }
+
+
 
     // define getters/setters
 
