@@ -24,7 +24,7 @@ public class BoardGame {
 
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "PlayerGameStats",
+    @JoinTable(name = "player_game_stats",
             joinColumns = @JoinColumn(name = "game_id"),
             inverseJoinColumns = @JoinColumn(name = "player_id"))
     private Collection<Player> players;

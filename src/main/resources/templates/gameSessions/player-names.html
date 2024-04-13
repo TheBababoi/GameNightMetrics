@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Select Players</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+</head>
+<body>
+<h2>Select Players</h2>
+
+<form th:action="@{/gamesessions/selectWinners}" method="post">
+    <!-- Hidden input to pass the selected boardgameId -->
+    <input type="hidden" name="boardgameId" th:value="${boardgameId}">
+
+    <!-- Generate dropdown lists for player names -->
+    <div th:each="index : ${#numbers.sequence(1, selectedPlayerNumber)}">
+        <label th:text="'Player ' + ${index}"></label>
+        <select name="selectedPlayers" class="form-select">
+            <option value="">Select Player</option>
+            <option th:each="player : ${players}" th:value="${player.id}" th:text="${player.username}"></option>
+        </select>
+    </div>
+
+    <button type="submit">Select Winners</button>
+</form>
+</body>
+</html>

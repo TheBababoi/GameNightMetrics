@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Select Winners</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+</head>
+<body>
+<h2>Select Winners</h2>
+
+<form th:action="@{/gamesessions/saveSession}" method="post">
+    <!-- Hidden input to pass the selected boardgameId -->
+    <input type="hidden" name="boardgameId" th:value="${boardgameId}">
+
+    <div th:each="player : ${players}">
+        <input type="hidden" name="players" th:value="${player.id}">
+    </div>
+    <!-- Display player names with checkboxes for selecting winners -->
+    <div th:each="player : ${players}">
+        <!-- Display player name fetched from the list -->
+        <label th:text="${player.username}"></label>
+        <!-- Checkbox to mark player as winner -->
+        <input type="checkbox" name="winners" th:value="${player.id}">
+    </div>
+
+    <button type="submit">Save Session</button>
+</form>
+</body>
+</html>

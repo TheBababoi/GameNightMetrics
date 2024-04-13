@@ -94,11 +94,9 @@ public class PlayerController {
 
         if (player != null) {
             System.out.println(player);
-            // Call your update method with the retrieved player
-            doUpdate(player, model);
-        } else {
-            // Handle case where player is not found in the session
-        }
+
+            doUpdate(player, model);}
+
 
         return "players/player-form";
     }

@@ -49,7 +49,7 @@ CREATE TABLE BoardGame (
 
 
 -- Create Junction Table (PlayerGameStats) for player statistics
-CREATE TABLE PlayerGameStats (
+CREATE TABLE player_game_stats (
   player_id INT NOT NULL,
   game_id INT NOT NULL,
   wins INT DEFAULT 0,
