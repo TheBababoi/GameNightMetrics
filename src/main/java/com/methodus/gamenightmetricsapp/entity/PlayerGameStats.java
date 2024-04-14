@@ -48,9 +48,6 @@ public class PlayerGameStats {
         this.player = player;
     }
 
-    public Optional<BoardGame> getBoardGame() {
-        return Optional.ofNullable(boardGame);
-    }
 
     public void setBoardGame(BoardGame boardGame) {
         this.boardGame = boardGame;
@@ -87,10 +84,11 @@ public class PlayerGameStats {
     public void setWinLossRatio(double winLossRatio) {
         this.winLossRatio = winLossRatio;
     }
-
-
-
-    public void setBoardGame(Optional<BoardGame> boardGame) {
+    public BoardGame getBoardGame() {
+        return boardGame;
     }
+
+
+
 }
 

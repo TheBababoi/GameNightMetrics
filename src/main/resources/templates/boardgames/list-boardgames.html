@@ -40,16 +40,20 @@
             <td th:text="${boardgame.minPlayers}"></td>
             <td th:text="${boardgame.maxPlayers}"></td>
             <td>
-                <div sec:authorize="hasRole('ADMIN')">
-                <a th:href="@{/boardgames/showFormForUpdate(boardgameId=${boardgame.id})}" class="btn btn-warning btn-sm">
-                    Edit Tome
-                </a></div>
-                <div sec:authorize="hasRole('ADMIN')">
-                <a th:href="@{/boardgames/delete(boardgameId=${boardgame.id})}" class="btn btn-danger btn-sm"
-                   onclick="if (!(confirm('Are you certain you wish to burn this tome?'))) return false">
-                    Burn Tome
-                </a></div>
-
+                <div class="button-group">
+                    <div sec:authorize="hasRole('ADMIN')">
+                        <a th:href="@{/boardgames/showFormForUpdate(boardgameId=${boardgame.id})}" class="btn btn-warning btn-sm">
+                            Edit Tome
+                        </a>
+                        <a th:href="@{/boardgames/delete(boardgameId=${boardgame.id})}" class="btn btn-danger btn-sm"
+                           onclick="if (!(confirm('Are you certain you wish to burn this tome?'))) return false">
+                            Burn Tome
+                        </a>
+                    </div>
+                    <a th:href="@{/gamesessions/boardgamestats(boardgameId=${boardgame.id})}" class="btn btn-danger btn-sm">
+                        See Stats
+                    </a>
+                </div>
             </td>
         </tr>
         </tbody>

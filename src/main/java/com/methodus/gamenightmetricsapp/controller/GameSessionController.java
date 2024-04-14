@@ -2,22 +2,17 @@ package com.methodus.gamenightmetricsapp.controller;
 
 import com.methodus.gamenightmetricsapp.config.BoardGameConfig;
 import com.methodus.gamenightmetricsapp.config.PlayerConfig;
-import com.methodus.gamenightmetricsapp.entity.BoardGame;
-import com.methodus.gamenightmetricsapp.entity.Player;
-import com.methodus.gamenightmetricsapp.entity.PlayerGameStats;
-import com.methodus.gamenightmetricsapp.entity.PlayerGameStatsPK;
+import com.methodus.gamenightmetricsapp.entity.*;
 import com.methodus.gamenightmetricsapp.service.BoardGameService;
 import com.methodus.gamenightmetricsapp.service.PlayerGameStatsService;
 import com.methodus.gamenightmetricsapp.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/gamesessions")
@@ -89,8 +84,6 @@ public class GameSessionController {
     }
 
 
-
-
     @PostMapping("/saveSession")
     public String saveSession(@RequestParam("boardgameId") int boardgameId,
                               @RequestParam("players") List<Integer> players,
@@ -99,6 +92,14 @@ public class GameSessionController {
         Optional<BoardGame> boardGame = Optional.ofNullable(boardGameService.findById(boardgameId));
         if (boardGame.isEmpty()){
             throw new RuntimeException("Board Game not found");
+        }else {
+            BoardGame tempBoardGame = boardGame.get();
+            DtoBoardGame dtoBoardGame = new DtoBoardGame();
+            dtoBoardGame.copyFromBoardGame(tempBoardGame);
+            dtoBoardGame.setTotalGamesPlayed(dtoBoardGame.getTotalGamesPlayed()+1);
+            System.out.println(dtoBoardGame);
+
+            boardGameService.save(dtoBoardGame);
         }
 
         Map<Integer, PlayerGameStats> StatsMap = new HashMap<>();
@@ -111,6 +112,13 @@ public class GameSessionController {
 
         List<PlayerGameStats> playerGameStatsList = new ArrayList<>();
         for (Integer playerId : players) {
+            Player player = playerService.findById(playerId);
+            DtoPlayer dtoPlayer = new DtoPlayer();
+            dtoPlayer.copyFromPlayer(player);
+            dtoPlayer.setTotalGamesPlayed(dtoPlayer.getTotalGamesPlayed()+1);
+            System.out.println(dtoPlayer);
+            playerService.save(dtoPlayer);
+
             PlayerGameStats playerGameStats;
             if (StatsMap.containsKey(playerId)&&StatsMap.get(playerId)!=null) {
                 playerGameStats = StatsMap.get(playerId);
@@ -147,8 +155,31 @@ public class GameSessionController {
         return "gameSessions/gamesession-success";
     }
 
+    @GetMapping("/boardgamestats")
+    public String getBoardGameStats(@RequestParam("boardgameId") int boardgameId, Model model) {
+        List<PlayerGameStats> playerGameStatsList = playerGameStatsService.getPlayerStatsForBoardGame(boardgameId);
+        BoardGame boardGame = boardGameService.findById(boardgameId);
+        model.addAttribute("playerStats", playerGameStatsList);
+        model.addAttribute("boardgame", boardGame);
+        return "gameSessions/boardgame-display";
+    }
 
-
+    @GetMapping("/playerstats")
+    public String getPlayerStats(@RequestParam("playerId") int id, Model model) {
+        List<PlayerGameStats> playerGameStatsList = playerGameStatsService.getPlayerStatsForPlayer(id);
+        System.out.println(playerGameStatsList);
+        Player player = playerService.findById(id);
+        model.addAttribute("playerStats", playerGameStatsList);
+        model.addAttribute("player", player);
+        return "gameSessions/player-display";
+    }
 
 
 }
+
+
+
+
+
+
+

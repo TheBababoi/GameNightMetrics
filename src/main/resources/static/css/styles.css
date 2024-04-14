@@ -84,3 +84,12 @@ a {  /* Style all anchor tags (links) */
 a:hover {
     color: #c0a460;  /* Yellowish hover color for links */
 }
+
+.admin-buttons {
+    display: flex; /* Enable flexbox layout */
+    gap: 5px;      /* Add spacing between admin buttons */
+}
+
+.admin-buttons a {
+    flex-grow: 1;  /* Distribute space evenly between the buttons */
+}

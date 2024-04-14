@@ -11,8 +11,8 @@ public class DtoPlayer {
     @NotNull(message = "is required")
     @Size(min = 1, message = "is required")
     private String username;
-    @NotNull(message = "is required")
-    @Size(min = 4, message = "must be at least 4 characters long")
+    @NotNull(message = "Password is required")
+    @Size(min = 4, max = 40, message = " must be between 4 and 40 characters long")
     private String password;
     @Column(name="skill_level")
     private String skillLevel;
@@ -20,6 +20,7 @@ public class DtoPlayer {
     private String playStyle;
     @Column(name="preferred_game_type")
     private String preferredGameType;
+    private int totalGamesPlayed;
 
 
 
@@ -73,5 +74,36 @@ public class DtoPlayer {
 
     public void setPreferredGameType(String preferredGameType) {
         this.preferredGameType = preferredGameType;
+    }
+
+    public int getTotalGamesPlayed() {
+        return totalGamesPlayed;
+    }
+
+    public void setTotalGamesPlayed(int totalGamesPlayed) {
+        this.totalGamesPlayed = totalGamesPlayed;
+    }
+
+    public void copyFromPlayer(Player player) {
+        this.id = player.getId();
+        this.username = player.getUsername();
+        this.password = player.getPassword();
+        this.playStyle = player.getPlayStyle();
+        this.preferredGameType = player.getPreferredGameType();
+        this.skillLevel = player.getSkillLevel();
+        this.totalGamesPlayed = player.getTotalGamesPlayed();
+    }
+
+    @Override
+    public String toString() {
+        return "DtoPlayer{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", skillLevel='" + skillLevel + '\'' +
+                ", playStyle='" + playStyle + '\'' +
+                ", preferredGameType='" + preferredGameType + '\'' +
+                ", totalGamesPlayed=" + totalGamesPlayed +
+                '}';
     }
 }

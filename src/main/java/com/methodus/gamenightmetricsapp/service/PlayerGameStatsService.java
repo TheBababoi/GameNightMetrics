@@ -12,4 +12,10 @@ public interface PlayerGameStatsService {
     Optional<PlayerGameStats> findById(PlayerGameStatsPK pk);
 
     List<PlayerGameStats> saveAll(List<PlayerGameStats> playerGameStatsList);
+
+    List<PlayerGameStats> getPlayerStatsForBoardGame(int boardgameId);
+
+    List<PlayerGameStats> getPlayerStatsForPlayer(int playerId);
+
+
 }

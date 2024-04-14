@@ -27,4 +27,16 @@ public class PlayerGameStatsServiceImpl implements  PlayerGameStatsService {
     public List<PlayerGameStats> saveAll(List<PlayerGameStats> playerGameStatsList) {
         return playerGameStatsRepository.saveAll(playerGameStatsList);
     }
+
+    @Override
+    public List<PlayerGameStats> getPlayerStatsForBoardGame(int boardgameId) {
+        return playerGameStatsRepository.findByBoardGameId(boardgameId);
+    }
+
+    @Override
+    public List<PlayerGameStats> getPlayerStatsForPlayer(int playerId) {
+        return  playerGameStatsRepository.findByPlayerId(playerId);
+    }
+
+
 }

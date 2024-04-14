@@ -65,11 +65,7 @@ public class PlayerServiceImpl implements PlayerService{
         }
 
         //transfer the data back to the entity
-        player.setUsername(dtoPlayer.getUsername());
-        player.setPassword(bCryptPasswordEncoder.encode((dtoPlayer.getPassword())));
-        player.setPlayStyle(dtoPlayer.getPlayStyle());
-        player.setSkillLevel(dtoPlayer.getSkillLevel());
-        player.setPreferredGameType(dtoPlayer.getPreferredGameType());
+       player.copyFromDto(dtoPlayer,bCryptPasswordEncoder);
         //check if the player does not have roles
         if (player.getRoles()==null){
             //set player role to user

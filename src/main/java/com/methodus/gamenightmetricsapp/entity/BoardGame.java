@@ -21,6 +21,8 @@ public class BoardGame {
     private int maxPlayers;
     @Column(name="number_of_min_players")
     private int minPlayers;
+    @Column(name="total_games_played")
+    private int totalGamesPlayed;
 
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
@@ -86,7 +88,21 @@ public class BoardGame {
         this.minPlayers = minPlayers;
     }
 
+    public int getTotalGamesPlayed() {
+        return totalGamesPlayed;
+    }
 
+    public void setTotalGamesPlayed(int totalGamesPlayed) {
+        this.totalGamesPlayed = totalGamesPlayed;
+    }
+
+    public Collection<Player> getPlayers() {
+        return players;
+    }
+
+    public void setPlayers(Collection<Player> players) {
+        this.players = players;
+    }
     // define toString
 
 
@@ -99,5 +115,14 @@ public class BoardGame {
                 ", maxPlayers='" + maxPlayers + '\'' +
                 ", minPlayers='" + minPlayers + '\'' +
                 '}';
+    }
+
+    public void copyFromDto(DtoBoardGame dtoBoardGame) {
+        this.setId(dtoBoardGame.getId());
+        this.setName(dtoBoardGame.getName());
+        this.setGameType(dtoBoardGame.getGameType());
+        this.setMinPlayers(dtoBoardGame.getMinPlayers());
+        this.setMaxPlayers(dtoBoardGame.getMaxPlayers());
+        this.setTotalGamesPlayed(dtoBoardGame.getTotalGamesPlayed());
     }
 }

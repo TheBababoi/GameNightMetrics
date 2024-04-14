@@ -48,16 +48,20 @@
             <td th:text="${player.playStyle}"></td>
             <td th:text="${player.preferredGameType}"></td>
             <td>
-                <div sec:authorize="hasRole('ADMIN')">
-                <a th:href="@{/players/showFormForUpdate(playerId=${player.id})}" class="btn btn-warning btn-sm">
-                    Edit Entry
-                </a></div>
-                <div sec:authorize="hasRole('ADMIN')">
-                <a th:href="@{/players/delete(playerId=${player.id})}" class="btn btn-danger btn-sm"
-                   onclick="if (!(confirm('Are you sure you want to banish this player?'))) return false">
-                    Banish
-                </a></div>
-
+                <div class="button-group">
+                    <div sec:authorize="hasRole('ADMIN')">
+                        <a th:href="@{/players/showFormForUpdate(playerId=${player.id})}" class="btn btn-warning btn-sm">
+                            Edit Entry
+                        </a>
+                        <a th:href="@{/players/delete(playerId=${player.id})}" class="btn btn-danger btn-sm"
+                           onclick="if (!(confirm('Are you sure you want to banish this player?'))) return false">
+                            Banish
+                        </a>
+                    </div>
+                    <a th:href="@{/gamesessions/playerstats(playerId=${player.id})}" class="btn btn-danger btn-sm">
+                        See Stats
+                    </a>
+                </div>
             </td>
 
 

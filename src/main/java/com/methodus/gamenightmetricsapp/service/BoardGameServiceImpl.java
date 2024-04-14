@@ -50,11 +50,7 @@ public class BoardGameServiceImpl implements BoardGameService {
         }
 
         //transfer the data back to the entity
-       boardGame.setName(dtoBoardGame.getName());
-       boardGame.setGameType(dtoBoardGame.getGameType());
-       boardGame.setMinPlayers(dtoBoardGame.getMinPlayers());
-       boardGame.setMaxPlayers(dtoBoardGame.getMaxPlayers());
-
+        boardGame.copyFromDto(dtoBoardGame);
         return boardGameRepository.save(boardGame);
     }
 

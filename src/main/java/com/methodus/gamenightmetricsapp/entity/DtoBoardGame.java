@@ -15,6 +15,7 @@ public class DtoBoardGame {
     private String gameType;
     private int maxPlayers;
     private int minPlayers;
+    private int totalGamesPlayed;
 
     public DtoBoardGame() {
     }
@@ -57,5 +58,34 @@ public class DtoBoardGame {
 
     public void setMinPlayers(int minPlayers) {
         this.minPlayers = minPlayers;
+    }
+
+    public int getTotalGamesPlayed() {
+        return totalGamesPlayed;
+    }
+
+    public void setTotalGamesPlayed(int totalGamesPlayed) {
+        this.totalGamesPlayed = totalGamesPlayed;
+    }
+
+    public void copyFromBoardGame(BoardGame boardGame) {
+        this.id = boardGame.getId();
+        this.name = boardGame.getName();
+        this.minPlayers = boardGame.getMinPlayers();
+        this.maxPlayers = boardGame.getMaxPlayers();
+        this.gameType = boardGame.getGameType();
+        this.totalGamesPlayed = boardGame.getTotalGamesPlayed();
+    }
+
+    @Override
+    public String toString() {
+        return "DtoBoardGame{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", gameType='" + gameType + '\'' +
+                ", maxPlayers=" + maxPlayers +
+                ", minPlayers=" + minPlayers +
+                ", totalGamesPlayed=" + totalGamesPlayed +
+                '}';
     }
 }

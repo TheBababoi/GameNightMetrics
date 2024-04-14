@@ -1,6 +1,10 @@
 package com.methodus.gamenightmetricsapp.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+
 
 
 import java.util.Collection;
@@ -26,6 +30,8 @@ public class Player {
     private String playStyle;
     @Column(name="preferred_game_type")
     private String preferredGameType;
+    @Column(name = "total_games_played")
+    private int totalGamesPlayed;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "players_roles",
@@ -123,6 +129,16 @@ public class Player {
         this.roles = roles;
     }
 
+    public int getTotalGamesPlayed() {
+        return totalGamesPlayed;
+    }
+
+    public void setTotalGamesPlayed(int totalGamesPlayed) {
+        this.totalGamesPlayed = totalGamesPlayed;
+    }
+
+
+
     // define toString
 
 
@@ -136,5 +152,22 @@ public class Player {
                 ", playStyle='" + playStyle + '\'' +
                 ", preferredGameType='" + preferredGameType + '\'' +
                 '}';
+    }
+
+    public void copyFromDto(DtoPlayer dtoPlayer, PasswordEncoder passwordEncoder) {
+        this.setId(dtoPlayer.getId());
+        this.setUsername(dtoPlayer.getUsername());
+
+        if (dtoPlayer.getPassword().length() >= 59) {
+            // Likely encrypted
+            this.setPassword(dtoPlayer.getPassword());
+        } else {
+            // Likely not encrypted
+            this.setPassword(passwordEncoder.encode(dtoPlayer.getPassword()));
+        }
+        this.setPlayStyle(dtoPlayer.getPlayStyle());
+        this.setSkillLevel(dtoPlayer.getSkillLevel());
+        this.setPreferredGameType(dtoPlayer.getPreferredGameType());
+        this.setTotalGamesPlayed(dtoPlayer.getTotalGamesPlayed());
     }
 }
