@@ -9,12 +9,13 @@
 </head>
 <body>
 <h2>Player Numbers for <span th:text="${boardgame.name}"></span></h2>
+<div th:if="${errorMessage != null}" class="alert alert-danger" role="alert">
+    <span th:text="${errorMessage}"></span>
+</div>
 
 <form th:action="@{/gamesessions/selectPlayers}" method="post">
-    <!-- Hidden input to pass the selected boardgameId -->
     <input type="hidden" name="boardgameId" th:value="${boardgame.id}">
 
-    <!-- Dropdown menu for selecting the number of players -->
     <select name="selectedPlayerNumber" id="selectedPlayerNumber">
         <option th:each="number : ${possibleNumberOfPlayers}" th:value="${number}" th:text="${number}"></option>
     </select>

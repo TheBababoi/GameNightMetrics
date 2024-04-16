@@ -15,8 +15,5 @@ public interface PlayerService extends UserDetailsService {
     Player save(DtoPlayer dtoPlayer);
     void deleteById(int id);
     Player findByPlayerName(String userName);
-
-
-
-
+    int count();
 }

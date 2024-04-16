@@ -9,16 +9,16 @@
 </head>
 <body>
 <h2>Select Players</h2>
+<div th:if="${errorMessage != null}" class="alert alert-danger" role="alert">
+    <span th:text="${errorMessage}"></span>
+</div>
 
 <form th:action="@{/gamesessions/selectWinners}" method="post">
-    <!-- Hidden input to pass the selected boardgameId -->
     <input type="hidden" name="boardgameId" th:value="${boardgameId}">
 
-    <!-- Generate dropdown lists for player names -->
     <div th:each="index : ${#numbers.sequence(1, selectedPlayerNumber)}">
         <label th:text="'Player ' + ${index}"></label>
         <select name="selectedPlayers" class="form-select">
-            <option value="">Select Player</option>
             <option th:each="player : ${players}" th:value="${player.id}" th:text="${player.username}"></option>
         </select>
     </div>

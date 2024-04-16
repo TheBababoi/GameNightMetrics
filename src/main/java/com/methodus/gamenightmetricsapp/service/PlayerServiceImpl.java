@@ -86,6 +86,10 @@ public class PlayerServiceImpl implements PlayerService{
         return playerRepository.findPlayerByUsername(userName);
     }
 
+    @Override
+    public int count() {
+        return (int) playerRepository.count();
+    }
 
 
     @Override

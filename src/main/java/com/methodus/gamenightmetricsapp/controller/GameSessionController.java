@@ -52,7 +52,6 @@ public class GameSessionController {
         for (int i = boardGame.getMinPlayers(); i <=boardGame.getMaxPlayers() ; i++) {
             possibleNumberOfPlayers.add(i);
         }
-        System.out.println(possibleNumberOfPlayers);
         model.addAttribute("boardgame", boardGame);
         model.addAttribute("possibleNumberOfPlayers",possibleNumberOfPlayers);
         return "gameSessions/player-numbers";
@@ -62,6 +61,18 @@ public class GameSessionController {
     public String selectPlayers(@RequestParam("boardgameId") int boardgameId,
                                 @RequestParam("selectedPlayerNumber") int selectedPlayerNumber,
                                 Model model) {
+        //Validation
+        if (selectedPlayerNumber > playerService.count()){
+            BoardGame boardGame = boardGameService.findById(boardgameId);
+            List<Integer> possibleNumberOfPlayers = new ArrayList<>();
+            for (int i = boardGame.getMinPlayers(); i <=boardGame.getMaxPlayers() ; i++) {
+                possibleNumberOfPlayers.add(i);
+            }
+            model.addAttribute("boardgame", boardGame);
+            model.addAttribute("possibleNumberOfPlayers",possibleNumberOfPlayers);
+            model.addAttribute("errorMessage", "Error: Not enough players in the Database");
+            return "gameSessions/player-numbers";
+        }
         List<Player> players = playerService.findAll();
         model.addAttribute("selectedPlayerNumber", selectedPlayerNumber);
         model.addAttribute("players", players);
@@ -74,6 +85,15 @@ public class GameSessionController {
     public String selectWinners(@RequestParam("boardgameId") int boardgameId,
                                 @RequestParam("selectedPlayers") List<Integer> selectedPlayers, Model model) {
         ArrayList<Player> players = new ArrayList<>();
+        //Validation
+        if (hasDuplicates(selectedPlayers)){
+            List<Player> playerList = playerService.findAll();
+            model.addAttribute("selectedPlayerNumber",selectedPlayers.size());
+            model.addAttribute("players", playerList);
+            model.addAttribute("boardgameId", boardgameId);
+            model.addAttribute("errorMessage", "Error: Please choose only unique players");
+            return "gameSessions/player-names";
+        }
         for (Integer id : selectedPlayers){
             players.add(playerService.findById(id));
         }
@@ -195,6 +215,17 @@ public class GameSessionController {
         }
         model.addAttribute("data",data);
         return "gameSessions/leaderboard-display";
+    }
+
+    public static boolean hasDuplicates(List<Integer> list) {
+        Set<Integer> seen = new HashSet<>();
+        for (Integer element : list) {
+            if (seen.contains(element)) {
+                return true;
+            }
+            seen.add(element);
+        }
+        return false;
     }
 
 
