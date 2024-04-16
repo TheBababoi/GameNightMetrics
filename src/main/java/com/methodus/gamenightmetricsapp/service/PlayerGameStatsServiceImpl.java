@@ -39,8 +39,14 @@ public class PlayerGameStatsServiceImpl implements  PlayerGameStatsService {
     }
 
     @Override
-    public List<Object[]> getLeaderboardStats() {
-        return  playerGameStatsRepository.findLeaderboardStats();
+    public List<Object[]> getLeaderboardStats(String gameType) {
+        if (gameType != null && !gameType.isEmpty()) {
+            // Call your repository method with game type filtering
+            return playerGameStatsRepository.findLeaderboardStatsByGameType(gameType);
+        } else {
+            // Call your repository method to retrieve all games
+            return playerGameStatsRepository.findLeaderboardStats();
+        }
 
     }
 

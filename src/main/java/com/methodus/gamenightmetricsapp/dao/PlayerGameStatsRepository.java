@@ -26,6 +26,12 @@ public interface PlayerGameStatsRepository extends JpaRepository<PlayerGameStats
     List<Object[]> findLeaderboardStats();
 
 
+    @Query("SELECT p.player, SUM(p.wins) AS totalWins, SUM(p.loses) AS totalLosses, SUM(p.plays) AS totalPlays, AVG(p.winLossRatio) AS averageWinLossRatio " +
+            "FROM PlayerGameStats p " +
+            "WHERE LOCATE(:gameType, p.boardGame.gameType) > 0 " +
+            "GROUP BY p.player.id " +
+            "ORDER BY totalWins DESC, totalLosses ASC")
+    List<Object[]> findLeaderboardStatsByGameType(String gameType);
 
 
 }

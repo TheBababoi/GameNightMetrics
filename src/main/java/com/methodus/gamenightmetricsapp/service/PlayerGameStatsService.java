@@ -18,7 +18,7 @@ public interface PlayerGameStatsService {
 
     List<PlayerGameStats> getPlayerStatsForPlayer(int playerId);
 
-    List<Object[]> getLeaderboardStats();
+    List<Object[]> getLeaderboardStats(String gameType);
 
 
 

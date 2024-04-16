@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
@@ -11,30 +10,39 @@
     <link rel="stylesheet" th:href="@{/css/styles.css}"/>
 </head>
 <body>
-<h1 style="text-align: center;">Player Leaderboard</h1>
+<h1 style="text-align: center; margin-bottom: 20px;">Player Statistics for: [[${selectedGameType != null ? selectedGameType : 'All'}]] Games</h1>
+
+
+
+
+
+<div class="mb-3">
+    <form th:action="@{/gamesessions/leaderboardpost}" method="post">
+        <select name="selectedGameType" class="form-select">
+            <option value="">All Games</option>
+            <option th:each="gameType : ${gameTypes}" th:value="${gameType}" th:text="${gameType}">All Game Types</option>
+        </select>
+        <button type="submit" class="btn btn-primary ms-2">Filter</button>
+    </form>
+</div>
+
 <div style="width: 80%; margin: 0 auto; overflow: hidden;">
-<table class="table table-bordered table-striped table-dark">
-    <tr>
-        <th>Player Name</th>
-        <th>Wins</th>
-        <th>Losses</th>
-        <th>Plays</th>
-        <th>Win/Loss Ratio %</th>
-    </tr>
-    <tr th:each="playerStatsMap : ${data}">
-        <td th:text="${playerStatsMap['player'].username}"></td>
-        <td th:text="${playerStatsMap['wins']}"></td>
-        <td th:text="${playerStatsMap['loses']}"></td>
-        <td th:text="${playerStatsMap['plays']}"></td>
-        <td th:text="${#numbers.formatDecimal(playerStatsMap['ratio'], 0, 2)}"></td>
-
-
-
-
-
-
-    </tr>
-</table>
+    <table class="table table-bordered table-striped table-dark">
+        <tr>
+            <th>Player Name</th>
+            <th>Wins</th>
+            <th>Losses</th>
+            <th>Plays</th>
+            <th>Win/Loss Ratio %</th>
+        </tr>
+        <tr th:each="playerStatsMap : ${data}">
+            <td th:text="${playerStatsMap['player'].username}"></td>
+            <td th:text="${playerStatsMap['wins']}"></td>
+            <td th:text="${playerStatsMap['loses']}"></td>
+            <td th:text="${playerStatsMap['plays']}"></td>
+            <td th:text="${#numbers.formatDecimal(playerStatsMap['ratio'], 0, 2)}"></td>
+        </tr>
+    </table>
 </div>
 
 <a th:href="@{/home}" class="text-decoration-none float-end" style="font-size: 1.2em; margin-right: 60px;">

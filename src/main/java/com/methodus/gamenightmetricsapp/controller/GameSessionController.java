@@ -195,8 +195,23 @@ public class GameSessionController {
     }
 
     @GetMapping("/leaderboard")
-    public String getPlayerBoardGameStats(Model model) {
-        List<Object[]> resultList = playerGameStatsService.getLeaderboardStats();
+    public String getPlayerBoardGameStatsGet(@RequestParam(required = false) String selectedGameType,Model model) {
+        return getPlayerBoardGameStats(selectedGameType, model);
+    }
+
+    @PostMapping("/leaderboardpost")
+    public String getPlayerBoardGameStatsPost(@RequestParam(required = false) String selectedGameType,Model model) {
+        return getPlayerBoardGameStats(selectedGameType, model);
+    }
+
+    private String getPlayerBoardGameStats(@RequestParam(required = false) String selectedGameType, Model model) {
+        List<Object[]> resultList;
+        if (selectedGameType != null && !selectedGameType.isEmpty()) {
+            resultList = playerGameStatsService.getLeaderboardStats(selectedGameType);
+        } else {
+            selectedGameType = null;
+            resultList = playerGameStatsService.getLeaderboardStats(null);
+        }
         List<Map<String, Object>> data = new ArrayList<>();
 
         for (Object[] result : resultList) {
@@ -213,6 +228,8 @@ public class GameSessionController {
             }
             data.add(stats);
         }
+        model.addAttribute("selectedGameType",selectedGameType);
+        model.addAttribute("gameTypes",boardGameConfig.GAME_TYPES);
         model.addAttribute("data",data);
         return "gameSessions/leaderboard-display";
     }
