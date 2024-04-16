@@ -1,0 +1,43 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Player Statistics</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+</head>
+<body>
+<h1 style="text-align: center;">Player Leaderboard</h1>
+<div style="width: 80%; margin: 0 auto; overflow: hidden;">
+<table class="table table-bordered table-striped table-dark">
+    <tr>
+        <th>Player Name</th>
+        <th>Wins</th>
+        <th>Losses</th>
+        <th>Plays</th>
+        <th>Win/Loss Ratio %</th>
+    </tr>
+    <tr th:each="playerStatsMap : ${data}">
+        <td th:text="${playerStatsMap['player'].username}"></td>
+        <td th:text="${playerStatsMap['wins']}"></td>
+        <td th:text="${playerStatsMap['loses']}"></td>
+        <td th:text="${playerStatsMap['plays']}"></td>
+        <td th:text="${#numbers.formatDecimal(playerStatsMap['ratio'], 0, 2)}"></td>
+
+
+
+
+
+
+    </tr>
+</table>
+</div>
+
+<a th:href="@{/home}" class="text-decoration-none float-end" style="font-size: 1.2em; margin-right: 60px;">
+    Back to Base </a>
+</body>
+</html>

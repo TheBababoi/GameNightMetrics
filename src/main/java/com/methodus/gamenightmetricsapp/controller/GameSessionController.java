@@ -130,7 +130,7 @@ public class GameSessionController {
                 playerGameStats.setPlays(0);
                 playerGameStats.setWins(0);
                 playerGameStats.setLoses(0);
-                playerGameStats.setWinLossRatio(0.00);
+                playerGameStats.setWinLossRatio(00.00);
             }
 
             if (winners != null && winners.contains(playerId)) {
@@ -144,7 +144,7 @@ public class GameSessionController {
             if (playerGameStats.getLoses()==0){
                 playerGameStats.setWinLossRatio(100.00);
             }else {
-                playerGameStats.setWinLossRatio((double) playerGameStats.getWins()/playerGameStats.getPlays());
+                playerGameStats.setWinLossRatio((double) (playerGameStats.getWins()/playerGameStats.getPlays())*100);
             }
 
             playerGameStatsList.add(playerGameStats);
@@ -173,6 +173,30 @@ public class GameSessionController {
         model.addAttribute("player", player);
         return "gameSessions/player-display";
     }
+
+    @GetMapping("/leaderboard")
+    public String getPlayerBoardGameStats(Model model) {
+        List<Object[]> resultList = playerGameStatsService.getLeaderboardStats();
+        List<Map<String, Object>> data = new ArrayList<>();
+
+        for (Object[] result : resultList) {
+            Map<String, Object> stats = new HashMap<>();
+            stats.put("player", result[0]);
+            stats.put("wins", result[1]);
+            stats.put("loses", result[2]);
+            stats.put("plays", result[3]);
+            if ((long)result[3] != 0) {
+                double ratio = ((double) (long) result[1] / (long) result[3]) * 100;
+                stats.put("ratio", ratio);
+            } else {
+                stats.put("ratio", 00.0);
+            }
+            data.add(stats);
+        }
+        model.addAttribute("data",data);
+        return "gameSessions/leaderboard-display";
+    }
+
 
 
 }

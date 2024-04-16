@@ -1,13 +1,13 @@
 package com.methodus.gamenightmetricsapp.service;
 
 import com.methodus.gamenightmetricsapp.dao.PlayerGameStatsRepository;
+import com.methodus.gamenightmetricsapp.entity.Player;
 import com.methodus.gamenightmetricsapp.entity.PlayerGameStats;
 import com.methodus.gamenightmetricsapp.entity.PlayerGameStatsPK;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class PlayerGameStatsServiceImpl implements  PlayerGameStatsService {
@@ -36,6 +36,12 @@ public class PlayerGameStatsServiceImpl implements  PlayerGameStatsService {
     @Override
     public List<PlayerGameStats> getPlayerStatsForPlayer(int playerId) {
         return  playerGameStatsRepository.findByPlayerId(playerId);
+    }
+
+    @Override
+    public List<Object[]> getLeaderboardStats() {
+        return  playerGameStatsRepository.findLeaderboardStats();
+
     }
 
 

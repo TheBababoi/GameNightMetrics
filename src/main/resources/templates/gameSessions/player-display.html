@@ -33,7 +33,7 @@
             <td th:text="${playerStat.wins}"></td>
             <td th:text="${playerStat.loses}"></td>
             <td th:text="${playerStat.plays}"></td>
-            <td th:text="${playerStat.winLossRatio}"></td>
+            <td th:text="${#numbers.formatDecimal(playerStat.winLossRatio, 0, 2)}"></td>
         </tr>
         </tbody>
     </table>
@@ -46,3 +46,8 @@
 
 </body>
 </html>
+
+
+
+
+

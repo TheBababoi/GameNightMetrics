@@ -20,6 +20,12 @@ public interface PlayerGameStatsRepository extends JpaRepository<PlayerGameStats
     @Query("SELECT p FROM PlayerGameStats p WHERE p.player.id = :id ORDER BY p.wins DESC, p.winLossRatio DESC")
     List<PlayerGameStats> findByPlayerId(@Param("id") int id);
 
+    @Query("SELECT p.player, SUM(p.wins) AS totalWins, SUM(p.loses) AS totalLosses, SUM(p.plays) AS totalPlays, AVG(p.winLossRatio) AS averageWinLossRatio " +
+            "FROM PlayerGameStats p GROUP BY p.player.id " +
+            "ORDER BY totalWins DESC, totalLosses ASC")
+    List<Object[]> findLeaderboardStats();
+
+
 
 
 }
