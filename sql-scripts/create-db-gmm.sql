@@ -1,43 +1,34 @@
--- Drop schema if it already exists (prevents errors on re-creation)
 DROP SCHEMA IF EXISTS `GameNightMetrics`;
 
--- Create the schema
 CREATE SCHEMA `GameNightMetrics`;
 
--- Use the newly created schema
 USE `GameNightMetrics`;
 
--- Disable foreign key checks temporarily (for bulk data insertion if needed)
 SET FOREIGN_KEY_CHECKS = 0;
 
--- Create Roles table
 CREATE TABLE Role (
   id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  name VARCHAR(50) NOT NULL UNIQUE  -- Role name (e.g., admin, user)
+  name VARCHAR(50) NOT NULL UNIQUE  -- Role name (admin, user)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
--- Insert initial roles
 INSERT INTO `role` (name)
 VALUES
   ('ROLE_USER'),
   ('ROLE_ADMIN');
 
--- Create Players table
 CREATE TABLE Player (
   id INT PRIMARY KEY AUTO_INCREMENT,
   username VARCHAR(50) NOT NULL UNIQUE,
   password VARCHAR(255) NOT NULL,
   skill_level VARCHAR(50),
-  play_style VARCHAR(255),  -- Comma separated list of styles (e.g., Balanced,Aggressive)
-  preferred_game_type VARCHAR(255),  -- Comma separated list of game types (e.g., Strategy, RPG)
+  play_style VARCHAR(255),  -- Comma separated list of styles
+  preferred_game_type VARCHAR(255),  -- Comma separated list of game types
   total_games_played INT DEFAULT 0
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
--- Insert a sample player
 INSERT INTO Player (username, password, skill_level, play_style, preferred_game_type)
 VALUES ('Methodus', '$2a$12$HRqFg5UzUpg4E3Th.a07geTjhm6xfKu0rOc.EG5j.qnAq8lUMEJ/W', 'skill_level_here', 'play_style_here', 'preferred_game_type_here');
 
--- Create Board Games table
 CREATE TABLE BoardGame (
   id INT PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR(255) NOT NULL UNIQUE,
@@ -47,8 +38,6 @@ CREATE TABLE BoardGame (
   total_games_played INT DEFAULT 0
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
-
--- Create Junction Table (PlayerGameStats) for player statistics
 CREATE TABLE player_game_stats (
   player_id INT NOT NULL,
   game_id INT NOT NULL,
@@ -57,34 +46,46 @@ CREATE TABLE player_game_stats (
   plays INT DEFAULT 0,
   win_loss_ratio DECIMAL(5,2) DEFAULT 0.00,
   FOREIGN KEY (player_id) REFERENCES Player(id)
-    ON DELETE CASCADE ON UPDATE NO ACTION,  -- Cascade deletion of player's stats
+    ON DELETE CASCADE ON UPDATE NO ACTION,
   FOREIGN KEY (game_id) REFERENCES BoardGame(id)
-    ON DELETE NO ACTION ON UPDATE NO ACTION,  -- Prevent deleting game with referenced stats
+    ON DELETE NO ACTION ON UPDATE NO ACTION,
   PRIMARY KEY (player_id, game_id),
   INDEX fk_player_id (player_id),
   INDEX fk_game_id (game_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
--- Create table for Player Roles (many-to-many relationship)
+
 CREATE TABLE players_roles (
-  user_id INT NOT NULL,  -- Foreign key referencing Player.id
-  role_id INT NOT NULL,  -- Foreign key referencing Role.id
-  PRIMARY KEY (user_id, role_id),  -- Composite primary key for uniqueness
+  user_id INT NOT NULL,
+  role_id INT NOT NULL,
+  PRIMARY KEY (user_id, role_id),
   CONSTRAINT fk_players_roles_player_id FOREIGN KEY (user_id) REFERENCES Player(id)
-    ON DELETE NO ACTION ON UPDATE NO ACTION,  -- Prevent deleting player with roles
+    ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT fk_players_roles_role_id FOREIGN KEY (role_id) REFERENCES Role(id)
-    ON DELETE NO ACTION ON UPDATE NO ACTION   -- Prevent deleting role with assigned players
+    ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
--- Select the id of the sample player
+CREATE TABLE game_ratings (
+  player_id INT NOT NULL,
+  game_id INT NOT NULL,
+  rating INT,
+  comment VARCHAR(255),
+  PRIMARY KEY (player_id, game_id),
+  FOREIGN KEY (player_id) REFERENCES Player(id)
+     ON DELETE CASCADE ON UPDATE NO ACTION,
+  FOREIGN KEY (game_id) REFERENCES BoardGame(id)
+     ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
 SELECT id INTO @playerId FROM Player WHERE username = 'Methodus';
 
--- Insert roles for the sample player
+
 INSERT INTO players_roles (user_id, role_id)
 VALUES (@playerId, (SELECT id FROM Role WHERE name = 'ROLE_USER'));
 
 INSERT INTO players_roles (user_id, role_id)
 VALUES (@playerId, (SELECT id FROM Role WHERE name = 'ROLE_ADMIN'));
 
--- Enable foreign key checks for data integrity
+
 SET FOREIGN_KEY_CHECKS = 1;

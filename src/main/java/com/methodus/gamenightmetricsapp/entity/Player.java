@@ -45,6 +45,12 @@ public class Player {
             inverseJoinColumns = @JoinColumn(name = "game_id"))
     private Collection<BoardGame> boardgames;
 
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "game_ratings",
+            joinColumns = @JoinColumn(name = "player_id"),
+            inverseJoinColumns = @JoinColumn(name = "game_id"))
+    private Collection<BoardGame> boardgameratings;
+
 
 
     // define constructors

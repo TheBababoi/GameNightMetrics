@@ -1,17 +1,19 @@
 package com.methodus.gamenightmetricsapp.controller;
 
 import com.methodus.gamenightmetricsapp.config.BoardGameConfig;
-import com.methodus.gamenightmetricsapp.entity.BoardGame;
-import com.methodus.gamenightmetricsapp.entity.DtoBoardGame;
-import com.methodus.gamenightmetricsapp.entity.Player;
+import com.methodus.gamenightmetricsapp.entity.*;
 import com.methodus.gamenightmetricsapp.service.BoardGameService;
+import com.methodus.gamenightmetricsapp.service.GameRatingsService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -30,14 +32,14 @@ import java.util.logging.Logger;
 public class BoardGameController {
     private BoardGameService boardGameService;
     private BoardGameConfig boardGameConfig;
+    private GameRatingsService gameRatingsService;
     private Logger logger = Logger.getLogger(getClass().getName());
-
     @Autowired
-    public BoardGameController(BoardGameService boardGameService, BoardGameConfig boardGameConfig) {
+    public BoardGameController(BoardGameService boardGameService, BoardGameConfig boardGameConfig, GameRatingsService gameRatingsService) {
         this.boardGameService = boardGameService;
         this.boardGameConfig = boardGameConfig;
+        this.gameRatingsService = gameRatingsService;
     }
-
 
 
     @GetMapping("/list")
@@ -141,6 +143,36 @@ public class BoardGameController {
         boardGameService.save(dtoBoardGame);
             return "redirect:/boardgames/list";
     }
+
+    @GetMapping("/showFormForRating")
+    public String showFormForRating(@RequestParam("boardgameId") int id, Model model) {
+        BoardGame boardGame = boardGameService.findById(id);
+        model.addAttribute("boardgame",boardGame);
+        return "boardgames/boardgame-rating";
+
+    }
+
+    @PostMapping("/saveRating")
+    public String saveRating(@RequestParam("boardgameId") int boardgameId,
+                             @RequestParam("rating") int rating,
+                             @RequestParam(value = "comment", required = false) String comment,
+                             HttpServletRequest request ,
+                             Model model) {
+
+        BoardGame boardGame = boardGameService.findById(boardgameId);
+        Player player = (Player) request.getSession().getAttribute("player");
+        GameRatings gameRatings = new GameRatings();
+        GameRatingsPK gameRatingsPK = new GameRatingsPK(player.getId(),boardgameId);
+        gameRatings.setId(gameRatingsPK);
+        gameRatings.setRating(rating);
+        gameRatings.setComment(comment);
+        gameRatingsService.save(gameRatings);
+
+
+   return "redirect:/boardgames/" + boardGame.getId();  // Redirect to board game details page
+    }
+
+
 
 
 

@@ -8,7 +8,7 @@ import java.util.Collection;
 @Table(name="boardgame")
 public class BoardGame {
 
-    // define fields
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -31,8 +31,11 @@ public class BoardGame {
             inverseJoinColumns = @JoinColumn(name = "player_id"))
     private Collection<Player> players;
 
-
-    // define constructors
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "game_ratings",
+            joinColumns = @JoinColumn(name = "game_id"),
+            inverseJoinColumns = @JoinColumn(name = "player_id"))
+    private Collection<Player> gameratings;
 
     public BoardGame() {
     }
@@ -44,9 +47,6 @@ public class BoardGame {
         this.minPlayers = minPlayers;
     }
 
-
-
-    // define getters/setters
 
     public int getId() {
         return id;
@@ -103,8 +103,6 @@ public class BoardGame {
     public void setPlayers(Collection<Player> players) {
         this.players = players;
     }
-    // define toString
-
 
     @Override
     public String toString() {

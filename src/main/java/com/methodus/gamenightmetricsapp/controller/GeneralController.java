@@ -13,7 +13,9 @@ public class GeneralController {
     }
 
     @GetMapping("/home")
-    public String showHome() {
+    public String showHome(HttpServletRequest request , Model model) {
+        Player player = (Player) request.getSession().getAttribute("player");
+        model.addAttribute("username", player.getUsername());
         return "home";
     }
 
