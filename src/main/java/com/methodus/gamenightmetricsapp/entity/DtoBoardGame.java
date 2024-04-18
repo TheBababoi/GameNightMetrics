@@ -16,6 +16,9 @@ public class DtoBoardGame {
     private int maxPlayers;
     private int minPlayers;
     private int totalGamesPlayed;
+    private double averageTotalRating;
+    private int averageDifficultyRating;
+    private int numberOfRatings;
 
     public DtoBoardGame() {
     }
@@ -68,6 +71,30 @@ public class DtoBoardGame {
         this.totalGamesPlayed = totalGamesPlayed;
     }
 
+    public double getAverageTotalRating() {
+        return averageTotalRating;
+    }
+
+    public void setAverageTotalRating(double averageTotalRating) {
+        this.averageTotalRating = averageTotalRating;
+    }
+
+    public int getAverageDifficultyRating() {
+        return averageDifficultyRating;
+    }
+
+    public void setAverageDifficultyRating(int averageDifficultyRating) {
+        this.averageDifficultyRating = averageDifficultyRating;
+    }
+
+    public int getNumberOfRatings() {
+        return numberOfRatings;
+    }
+
+    public void setNumberOfRatings(int numberOfRatings) {
+        this.numberOfRatings = numberOfRatings;
+    }
+
     public void copyFromBoardGame(BoardGame boardGame) {
         this.id = boardGame.getId();
         this.name = boardGame.getName();
@@ -75,6 +102,9 @@ public class DtoBoardGame {
         this.maxPlayers = boardGame.getMaxPlayers();
         this.gameType = boardGame.getGameType();
         this.totalGamesPlayed = boardGame.getTotalGamesPlayed();
+        this.averageTotalRating = boardGame.getAverageTotalRating();
+        this.averageDifficultyRating = boardGame.getAverageDifficultyRating();
+        this.numberOfRatings = boardGame.getNumberOfRatings();
     }
 
     @Override

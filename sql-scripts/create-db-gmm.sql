@@ -35,7 +35,10 @@ CREATE TABLE BoardGame (
   number_of_max_players INT,
   number_of_min_players INT,
   game_type VARCHAR(255),
-  total_games_played INT DEFAULT 0
+  total_games_played INT DEFAULT 0,
+  average_total_rating DECIMAL(5,2) DEFAULT 0.00,
+  average_difficulty_rating DECIMAL(5,2) DEFAULT 0.00,
+  number_of_ratings INT DEFAULT 0  
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 CREATE TABLE player_game_stats (
@@ -68,14 +71,92 @@ CREATE TABLE players_roles (
 CREATE TABLE game_ratings (
   player_id INT NOT NULL,
   game_id INT NOT NULL,
-  rating INT,
+  total_rating INT,
+  gameplay_rating INT,
+  theme_rating INT,
+  visual_rating INT,
+  difficulty_rating INT,
   comment VARCHAR(255),
   PRIMARY KEY (player_id, game_id),
   FOREIGN KEY (player_id) REFERENCES Player(id)
-     ON DELETE CASCADE ON UPDATE NO ACTION,
+   ON DELETE CASCADE ON UPDATE NO ACTION,
   FOREIGN KEY (game_id) REFERENCES BoardGame(id)
-     ON DELETE NO ACTION ON UPDATE NO ACTION
+   ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+DELIMITER //
+CREATE TRIGGER update_boardgame_ratings_after_insert
+AFTER INSERT ON game_ratings
+FOR EACH ROW
+BEGIN
+  UPDATE BoardGame b
+  SET b.average_total_rating = (
+    SELECT AVG(gr.total_rating)
+    FROM game_ratings gr
+    WHERE gr.game_id = NEW.game_id
+  ),
+  b.average_difficulty_rating = (
+    SELECT AVG(gr.difficulty_rating)
+    FROM game_ratings gr
+    WHERE gr.game_id = NEW.game_id
+  ),
+  b.number_of_ratings = (
+    SELECT COUNT(*)
+    FROM game_ratings gr
+    WHERE gr.game_id = NEW.game_id
+  )
+  WHERE b.id = NEW.game_id;
+END //
+
+CREATE TRIGGER update_boardgame_ratings_after_delete
+AFTER DELETE ON game_ratings
+FOR EACH ROW
+BEGIN
+  UPDATE BoardGame b
+  SET b.average_total_rating = (
+    SELECT AVG(gr.total_rating)
+    FROM game_ratings gr
+    WHERE gr.game_id = OLD.game_id
+  ),
+  b.average_difficulty_rating = (
+    SELECT AVG(gr.difficulty_rating)
+    FROM game_ratings gr
+    WHERE gr.game_id = OLD.game_id
+  ),
+  b.number_of_ratings = (
+    SELECT COUNT(*)
+    FROM game_ratings gr
+    WHERE gr.game_id = OLD.game_id
+  )
+  WHERE b.id = OLD.game_id;
+END //
+
+CREATE TRIGGER update_boardgame_ratings_after_update
+AFTER UPDATE ON game_ratings
+FOR EACH ROW
+BEGIN
+  UPDATE BoardGame b
+  SET b.average_total_rating = (
+    SELECT AVG(gr.total_rating)
+    FROM game_ratings gr
+    WHERE gr.game_id = NEW.game_id
+  ),
+  b.average_difficulty_rating = (
+    SELECT AVG(gr.difficulty_rating)
+    FROM game_ratings gr
+    WHERE gr.game_id = NEW.game_id
+  ),
+  b.number_of_ratings = (
+    SELECT COUNT(*)
+    FROM game_ratings gr
+    WHERE gr.game_id = NEW.game_id
+  )
+  WHERE b.id = NEW.game_id;
+END //
+DELIMITER ;
+
+
+
 
 
 SELECT id INTO @playerId FROM Player WHERE username = 'Methodus';

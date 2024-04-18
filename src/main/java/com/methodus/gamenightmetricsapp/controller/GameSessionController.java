@@ -164,7 +164,8 @@ public class GameSessionController {
             if (playerGameStats.getLoses()==0){
                 playerGameStats.setWinLossRatio(100.00);
             }else {
-                playerGameStats.setWinLossRatio((double) (playerGameStats.getWins()/playerGameStats.getPlays())*100);
+                playerGameStats.setWinLossRatio((double) 100 * playerGameStats.getWins() /playerGameStats.getPlays());
+
             }
 
             playerGameStatsList.add(playerGameStats);

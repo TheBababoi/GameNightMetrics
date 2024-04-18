@@ -40,7 +40,7 @@
             <td th:text="${playerStatsMap['wins']}"></td>
             <td th:text="${playerStatsMap['loses']}"></td>
             <td th:text="${playerStatsMap['plays']}"></td>
-            <td th:text="${#numbers.formatDecimal(playerStatsMap['ratio'], 0, 2)}"></td>
+            <td th:text="${#numbers.formatDecimal(playerStatsMap['ratio'], 0, 2)+ '%'}"></td>
         </tr>
     </table>
 </div>

@@ -1,8 +1,11 @@
 package com.methodus.gamenightmetricsapp.controller;
 
 import com.methodus.gamenightmetricsapp.config.PlayerConfig;
+import com.methodus.gamenightmetricsapp.entity.BoardGame;
 import com.methodus.gamenightmetricsapp.entity.DtoPlayer;
+import com.methodus.gamenightmetricsapp.entity.GameRatings;
 import com.methodus.gamenightmetricsapp.entity.Player;
+import com.methodus.gamenightmetricsapp.service.GameRatingsService;
 import com.methodus.gamenightmetricsapp.service.PlayerService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -33,14 +36,16 @@ public class PlayerController {
     private PlayerService playerService;
 
     private PlayerConfig playerConfig;
+    private GameRatingsService gameRatingsService;
     private Logger logger = Logger.getLogger(getClass().getName());
 
 
 
     @Autowired
-    public PlayerController(PlayerService playerService, PlayerConfig playerConfig) {
+    public PlayerController(PlayerService playerService, PlayerConfig playerConfig, GameRatingsService gameRatingsService) {
         this.playerService = playerService;
         this.playerConfig = playerConfig;
+        this.gameRatingsService = gameRatingsService;
     }
 
 
@@ -201,6 +206,14 @@ public class PlayerController {
         model.addAttribute("preselectedGameTypes", preselectedGameTypes);
 
 
+    }
+    @GetMapping("/showRatings")
+    public String showRatings(@RequestParam("playerId") int playerId, Model model) {
+        List<GameRatings> gameRatingsList = gameRatingsService.getGameRatingsForPlayer(playerId);
+        Player player = playerService.findById(playerId);
+        model.addAttribute("player",player);
+        model.addAttribute("gameRatings",gameRatingsList);
+        return "players/ratings-display";
     }
 
 

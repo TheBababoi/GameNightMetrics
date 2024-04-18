@@ -23,6 +23,12 @@ public class BoardGame {
     private int minPlayers;
     @Column(name="total_games_played")
     private int totalGamesPlayed;
+    @Column(name="average_total_rating")
+    private double averageTotalRating;
+    @Column(name="average_difficulty_rating")
+    private int averageDifficultyRating;
+    @Column(name="number_of_ratings")
+    private int numberOfRatings;
 
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
@@ -104,6 +110,30 @@ public class BoardGame {
         this.players = players;
     }
 
+    public double getAverageTotalRating() {
+        return averageTotalRating;
+    }
+
+    public void setAverageTotalRating(double averageTotalRating) {
+        this.averageTotalRating = averageTotalRating;
+    }
+
+    public int getAverageDifficultyRating() {
+        return averageDifficultyRating;
+    }
+
+    public void setAverageDifficultyRating(int averageDifficultyRating) {
+        this.averageDifficultyRating = averageDifficultyRating;
+    }
+
+    public int getNumberOfRatings() {
+        return numberOfRatings;
+    }
+
+    public void setNumberOfRatings(int numberOfRatings) {
+        this.numberOfRatings = numberOfRatings;
+    }
+
     @Override
     public String toString() {
         return "BoardGame{" +
@@ -122,5 +152,8 @@ public class BoardGame {
         this.setMinPlayers(dtoBoardGame.getMinPlayers());
         this.setMaxPlayers(dtoBoardGame.getMaxPlayers());
         this.setTotalGamesPlayed(dtoBoardGame.getTotalGamesPlayed());
+        this.setAverageTotalRating(dtoBoardGame.getAverageTotalRating());
+        this.setAverageDifficultyRating(dtoBoardGame.getAverageDifficultyRating());
+        this.setNumberOfRatings(dtoBoardGame.getNumberOfRatings());
     }
 }

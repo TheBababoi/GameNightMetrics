@@ -30,14 +30,15 @@
             <td th:text="${playerStat.wins}"></td>
             <td th:text="${playerStat.loses}"></td>
             <td th:text="${playerStat.plays}"></td>
-            <td th:text="${#numbers.formatDecimal(playerStat.winLossRatio, 0, 2)}"></td>
+            <td th:text="${#numbers.formatDecimal(playerStat.winLossRatio, 0, 2) + '%'}"></td>
+
         </tr>
         </tbody>
     </table>
 </div>
 
-<a th:href="@{/home}" class="text-decoration-none float-end" style="font-size: 1.2em; margin-right: 60px;">
-    Back to Base
+<a th:href="@{/players/list}" class="text-decoration-none float-end" style="font-size: 1.2em; margin-right: 60px;">
+    Back to the List
 </a>
 
 

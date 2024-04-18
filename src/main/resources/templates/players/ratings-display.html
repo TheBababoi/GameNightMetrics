@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.springframework.org/schema/security">
+<head>
+  <meta charset="UTF-8">
+  <title>GameNight Metrics - Board Games</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+</head>
+<body>
+<h1 style="text-align: center; margin-bottom: 20px;">[[${player.username}]]'s Ratings</h1>
+<div style="width: 80%; margin: 0 auto; overflow: hidden;">
+
+  <table class="table table-bordered table-striped table-dark">
+    <thead>
+    <tr>
+      <th>Board Game Name</th>
+      <th>Overall Rating</th>
+      <th>Gameplay Rating</th>
+      <th>Theme Rating</th>
+      <th>Visuals Rating</th>
+      <th>Difficulty Rating</th>
+      <th>Comment</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="gameRating : ${gameRatings}">
+      <td th:text="${gameRating.boardGame.name}">Board Game Name</td>
+      <td th:text="${gameRating.totalRating}">[[${gameRating.totalRating}]]</td>
+      <td th:text="${gameRating.gameplayRating}">[[${gameRating.gameplayRating}]]</td>
+      <td th:text="${gameRating.themeRating}">[[${gameRating.themeRating}]]</td>
+      <td th:text="${gameRating.visualRating}">[[${gameRating.visualsRating}]]</td>
+      <td th:text="${gameRating.difficultyRating}">[[${gameRating.difficultyRating}]]</td>
+      <td th:text="${gameRating.comment}">[[${gameRating.comment}]]</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+
+<a th:href="@{/players/list}" class="text-decoration-none float-end" style="font-size: 1.2em; margin-right: 60px;">
+  Back to the List
+</a>
+
+</body>
+</html>

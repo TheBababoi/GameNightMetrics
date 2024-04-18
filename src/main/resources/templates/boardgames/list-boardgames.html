@@ -29,6 +29,9 @@
             <th>Game Type</th>
             <th>Min Players</th>
             <th>Max Players</th>
+            <th>Total Plays</th>
+            <th>Average Rating</th>
+            <th>Difficulty Rating</th>
             <th>Actions</th>
         </tr>
         </thead>
@@ -39,6 +42,13 @@
             <td th:text="${boardgame.gameType}"></td>
             <td th:text="${boardgame.minPlayers}"></td>
             <td th:text="${boardgame.maxPlayers}"></td>
+            <td th:text="${boardgame.totalGamesPlayed}"></td>
+            <td>
+                <span th:text="${boardgame.averageTotalRating}"></span>
+                <span style="font-size: smaller;">(<span th:text="${boardgame.numberOfRatings}"></span>)</span>
+            </td>
+            <td th:text="${boardgame.averageDifficultyRating}"></td>
+
             <td>
                 <div class="button-group">
                     <div sec:authorize="hasRole('ADMIN')">
@@ -52,6 +62,9 @@
                     </div>
                     <a th:href="@{/gamesessions/boardgamestats(boardgameId=${boardgame.id})}" class="btn btn-danger btn-sm">
                         See Stats
+                    </a>
+                    <a th:href="@{/boardgames/showBoardgameRatings(boardgameId=${boardgame.id})}" class="btn btn-danger btn-sm">
+                        See Analytic Ratings
                     </a>
                     <a th:href="@{/boardgames/showFormForRating(boardgameId=${boardgame.id})}" class="btn btn-danger btn-sm">
                         Rate the Game
@@ -69,4 +82,3 @@
 
 </body>
 </html>
-
