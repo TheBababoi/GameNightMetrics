@@ -143,11 +143,11 @@ public class PlayerController {
 
         // place player in the web http session for later use
         Player loggedInPlayer = (Player) session.getAttribute("player");
-        if (dtoPlayer.getId() == loggedInPlayer.getId()) {
-            // DTO player ID matches the logged-in player ID
-            session.setAttribute("player", playerService.findById(dtoPlayer.getId()));}
-
-
+        if (loggedInPlayer!=null){
+            if (dtoPlayer.getId() == loggedInPlayer.getId()) {
+                // DTO player ID matches the logged-in player ID
+                session.setAttribute("player", playerService.findById(dtoPlayer.getId()));}
+        }
         //check if its a registering user or not
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {

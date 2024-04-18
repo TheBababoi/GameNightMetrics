@@ -11,14 +11,17 @@
 </head>
 <body>
 
-<h1>Rate:  [[${boardgame.name}]]</h1>
+<h1>Rate: [[${boardgame.name}]]</h1>
 <form th:action="@{/boardgames/saveRating}" method="post">
     <input type="hidden" name="boardgameId" th:value="${boardgame.id}">
 
     <div class="form-group">
         <label for="totalRating">Overall Rating:</label>
         <select name="totalRating" id="totalRating" class="form-control" required>
-            <option th:each="i : ${#numbers.sequence(1,10)}" th:value="${i}">[[${i}]]</option>
+            <option th:each="i : ${#numbers.sequence(1,10)}"
+                    th:value="${i}"
+                    th:selected="${gameRatings != null && gameRatings.totalRating == i}">[[${i}]]
+            </option>
         </select>
         <small class="form-text text-muted">This reflects your general impression of the game.</small>
     </div>
@@ -26,7 +29,10 @@
     <div class="form-group">
         <label for="gameplayRating">Gameplay Rating:</label>
         <select name="gameplayRating" id="gameplayRating" class="form-control" required>
-            <option th:each="i : ${#numbers.sequence(1,10)}" th:value="${i}">[[${i}]]</option>
+            <option th:each="i : ${#numbers.sequence(1,10)}"
+                    th:value="${i}"
+                    th:selected="${gameRatings != null && gameRatings.gameplayRating == i}">[[${i}]]
+            </option>
         </select>
         <small class="form-text text-muted">How engaging and strategic is the core gameplay?</small>
     </div>
@@ -34,7 +40,10 @@
     <div class="form-group">
         <label for="themeRating">Theme Rating:</label>
         <select name="themeRating" id="themeRating" class="form-control" required>
-            <option th:each="i : ${#numbers.sequence(1,10)}" th:value="${i}">[[${i}]]</option>
+            <option th:each="i : ${#numbers.sequence(1,10)}"
+                    th:value="${i}"
+                    th:selected="${gameRatings != null && gameRatings.themeRating == i}">[[${i}]]
+            </option>
         </select>
         <small class="form-text text-muted">How well does the theme integrate with the mechanics?</small>
     </div>
@@ -42,7 +51,10 @@
     <div class="form-group">
         <label for="visualRating">Visual Rating:</label>
         <select name="visualRating" id="visualRating" class="form-control" required>
-            <option th:each="i : ${#numbers.sequence(1,10)}" th:value="${i}">[[${i}]]</option>
+            <option th:each="i : ${#numbers.sequence(1,10)}"
+                    th:value="${i}"
+                    th:selected="${gameRatings != null && gameRatings.visualRating == i}">[[${i}]]
+            </option>
         </select>
         <small class="form-text text-muted">How appealing are the artwork and components?</small>
     </div>
@@ -50,7 +62,10 @@
     <div class="form-group">
         <label for="difficultyRating">Difficulty Rating:</label>
         <select name="difficultyRating" id="difficultyRating" class="form-control" required>
-            <option th:each="i : ${#numbers.sequence(1,10)}" th:value="${i}">[[${i}]]</option>
+            <option th:each="i : ${#numbers.sequence(1,10)}"
+                    th:value="${i}"
+                    th:selected="${gameRatings != null && gameRatings.difficultyRating == i}">[[${i}]]
+            </option>
         </select>
         <small class="form-text text-muted">How complex are the rules and learning curve?</small>
     </div>
@@ -58,7 +73,7 @@
     <br>
 
     <label for="comment">Comment:</label>
-    <textarea name="comment" id="comment" rows="5" maxlength="255"></textarea>
+    <textarea name="comment" id="comment" rows="5" maxlength="255" th:text="${gameRatings != null ? gameRatings.comment : ''}"></textarea>
     <br>
 
     <button type="submit">Rate</button>

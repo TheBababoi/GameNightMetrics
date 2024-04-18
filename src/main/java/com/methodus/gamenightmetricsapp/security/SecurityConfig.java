@@ -33,6 +33,7 @@ public class SecurityConfig {
                         configurer
                                 .requestMatchers("/").permitAll()
                                 .requestMatchers("/players/showFormForRegister").permitAll()
+                                .requestMatchers("/registration-confirmation").permitAll()
                                 .requestMatchers("/players/save").permitAll()
                                 .requestMatchers("/players/save").permitAll()
                                 .requestMatchers("/boardgames/showFormForAdd").hasRole("ADMIN")

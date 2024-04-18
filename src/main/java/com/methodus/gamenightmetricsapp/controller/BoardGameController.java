@@ -139,9 +139,14 @@ public class BoardGameController {
     }
 
     @GetMapping("/showFormForRating")
-    public String showFormForRating(@RequestParam("boardgameId") int id, Model model) {
+    public String showFormForRating(@RequestParam("boardgameId") int id, Model model,HttpServletRequest request) {
         BoardGame boardGame = boardGameService.findById(id);
         model.addAttribute("boardgame",boardGame);
+        //set the gameRatings in the model to prepopulate the form in case the player already made a Rating
+        Player player = (Player) request.getSession().getAttribute("player");
+        GameRatingsPK gameRatingsPK = new GameRatingsPK(player.getId(), boardGame.getId());
+        GameRatings gameRatings = gameRatingsService.findById(gameRatingsPK);
+        model.addAttribute("gameRatings",gameRatings);
         return "boardgames/boardgame-rating";
 
     }
@@ -154,16 +159,11 @@ public class BoardGameController {
                              @RequestParam("visualRating") int visualRating,
                              @RequestParam("difficultyRating") int difficultyRating,
                              @RequestParam(value = "comment", required = false) String comment,
-                             HttpServletRequest request ,
-                             Model model) {
-
-        BoardGame boardGame = boardGameService.findById(boardgameId);
+                             HttpServletRequest request) {
         Player player = (Player) request.getSession().getAttribute("player");
-
         GameRatingsPK gameRatingsPK = new GameRatingsPK(player.getId(),boardgameId);
         GameRatings gameRatings = new GameRatings(gameRatingsPK,totalRating,gameplayrating,themeRating,visualRating,difficultyRating,comment);
         gameRatingsService.save(gameRatings);
-
 
         return "boardgames/rating-success";
     }

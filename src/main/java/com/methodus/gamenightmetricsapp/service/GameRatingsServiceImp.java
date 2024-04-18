@@ -2,6 +2,7 @@ package com.methodus.gamenightmetricsapp.service;
 
 import com.methodus.gamenightmetricsapp.dao.GameRatingsRepository;
 import com.methodus.gamenightmetricsapp.entity.GameRatings;
+import com.methodus.gamenightmetricsapp.entity.GameRatingsPK;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,5 +29,10 @@ public class GameRatingsServiceImp implements GameRatingsService{
     @Override
     public List<GameRatings> getGameRatingsForPlayer(int playerId) {
         return gameRatingsRepository.findByPlayerId(playerId);
+    }
+
+    @Override
+    public GameRatings findById(GameRatingsPK gameRatingsPK) {
+        return gameRatingsRepository.findById(gameRatingsPK);
     }
 }
