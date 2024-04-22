@@ -84,6 +84,36 @@ CREATE TABLE game_ratings (
    ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+CREATE TABLE game_session (
+  session_id INT PRIMARY KEY AUTO_INCREMENT,
+  game_id INT NOT NULL,
+  session_date DATE NOT NULL,
+  session_duration TIME NOT NULL,
+  total_players INT NOT NULL,
+  FOREIGN KEY (game_id) REFERENCES BoardGame(id)
+    ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE participating_players (
+  session_id INT NOT NULL,
+  player_id INT NOT NULL,
+  PRIMARY KEY (session_id, player_id),
+  FOREIGN KEY (session_id) REFERENCES game_session(session_id)
+    ON DELETE CASCADE ON UPDATE NO ACTION,
+  FOREIGN KEY (player_id) REFERENCES Player(id)
+    ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE session_winners (
+  session_id INT NOT NULL,
+  player_id INT NOT NULL,
+  PRIMARY KEY (session_id, player_id),
+  FOREIGN KEY (session_id) REFERENCES game_session(session_id)
+    ON DELETE CASCADE ON UPDATE NO ACTION,
+  FOREIGN KEY (player_id) REFERENCES Player(id)
+    ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 DELIMITER //
 CREATE TRIGGER update_boardgame_ratings_after_insert
 AFTER INSERT ON game_ratings

@@ -3,9 +3,7 @@ package com.methodus.gamenightmetricsapp.controller;
 import com.methodus.gamenightmetricsapp.config.BoardGameConfig;
 import com.methodus.gamenightmetricsapp.config.PlayerConfig;
 import com.methodus.gamenightmetricsapp.entity.*;
-import com.methodus.gamenightmetricsapp.service.BoardGameService;
-import com.methodus.gamenightmetricsapp.service.PlayerGameStatsService;
-import com.methodus.gamenightmetricsapp.service.PlayerService;
+import com.methodus.gamenightmetricsapp.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,14 +21,20 @@ public class GameSessionController {
     private BoardGameService boardGameService;
     private BoardGameConfig boardGameConfig;
     private PlayerGameStatsService playerGameStatsService;
+    private GameSessionService gameSessionService;
+    private ParticipatingPlayerService participatingPlayerService;
+    private SessionWinnerService sessionWinnerService;
     private Logger logger = Logger.getLogger(getClass().getName());
     @Autowired
-    public GameSessionController(PlayerService playerService, PlayerConfig playerConfig, BoardGameService boardGameService, BoardGameConfig boardGameConfig, PlayerGameStatsService playerGameStatsService) {
+    public GameSessionController(PlayerService playerService, PlayerConfig playerConfig, BoardGameService boardGameService, BoardGameConfig boardGameConfig, PlayerGameStatsService playerGameStatsService, GameSessionService gameSessionService, ParticipatingPlayerService participatingPlayerService, SessionWinnerService sessionWinnerService) {
         this.playerService = playerService;
         this.playerConfig = playerConfig;
         this.boardGameService = boardGameService;
         this.boardGameConfig = boardGameConfig;
         this.playerGameStatsService = playerGameStatsService;
+        this.gameSessionService = gameSessionService;
+        this.participatingPlayerService = participatingPlayerService;
+        this.sessionWinnerService = sessionWinnerService;
     }
 
 
@@ -98,6 +102,7 @@ public class GameSessionController {
             players.add(playerService.findById(id));
         }
         System.out.println(players);
+        model.addAttribute("durations",boardGameConfig.GAME_TIME);
       model.addAttribute("players",players);
       model.addAttribute("boardgameId",boardgameId);
       return "gameSessions/player-winner";
@@ -107,7 +112,9 @@ public class GameSessionController {
     @PostMapping("/saveSession")
     public String saveSession(@RequestParam("boardgameId") int boardgameId,
                               @RequestParam("players") List<Integer> players,
-                              @RequestParam(name = "winners", required = false) List<Integer> winners) {
+                              @RequestParam("sessionDuration") String duration,
+                              @RequestParam(name = "winners", required = false) List<Integer> winners)
+                              {
 
         Optional<BoardGame> boardGame = Optional.ofNullable(boardGameService.findById(boardgameId));
         if (boardGame.isEmpty()){
@@ -129,14 +136,30 @@ public class GameSessionController {
                     .orElse(null);
             StatsMap.put(playerId, existingStats);
         }
+        GameSession gameSession = new GameSession();
+        gameSession.setGameId(boardgameId);
+        gameSession.setSessionDate(new Date());
+        gameSession.setSessionDuration(duration);
+        gameSession.setTotalPlayers(players.size());
+        gameSessionService.save(gameSession);
 
         List<PlayerGameStats> playerGameStatsList = new ArrayList<>();
+        List<ParticipatingPlayer> participatingPlayers = new ArrayList<>();
         for (Integer playerId : players) {
             Player player = playerService.findById(playerId);
             DtoPlayer dtoPlayer = new DtoPlayer();
             dtoPlayer.copyFromPlayer(player);
             dtoPlayer.setTotalGamesPlayed(dtoPlayer.getTotalGamesPlayed()+1);
             System.out.println(dtoPlayer);
+
+            ParticipatingPlayer participatingPlayer = new ParticipatingPlayer();
+            System.out.println(gameSession.getId());
+            System.out.println("ass");
+            participatingPlayer.setId(new GameSessionPlayerPk(playerId,gameSession.getId()));
+            participatingPlayer.setPlayer(playerService.findById(playerId));
+            participatingPlayer.setGameSession(gameSession);
+            participatingPlayers.add(participatingPlayer);
+
             playerService.save(dtoPlayer);
 
             PlayerGameStats playerGameStats;
@@ -171,6 +194,19 @@ public class GameSessionController {
             playerGameStatsList.add(playerGameStats);
         }
 
+        List<SessionWinner> sessionWinnersList = new ArrayList<>();
+            if (winners != null) {
+                for (Integer winnerId : winners) {
+                    SessionWinner winner = new SessionWinner();
+                    winner.setGameSession(gameSession);
+                    winner.setPlayer(playerService.findById(winnerId));
+                    winner.setId(new GameSessionPlayerPk(winnerId, gameSession.getId()));
+                    sessionWinnersList.add(winner);
+                }
+
+            }
+        participatingPlayerService.saveAll(participatingPlayers);
+        sessionWinnerService.saveAll(sessionWinnersList);
         playerGameStatsService.saveAll(playerGameStatsList);
 
         return "gameSessions/gamesession-success";
@@ -204,6 +240,72 @@ public class GameSessionController {
     public String getPlayerBoardGameStatsPost(@RequestParam(required = false) String selectedGameType,Model model) {
         return getPlayerBoardGameStats(selectedGameType, model);
     }
+
+    @GetMapping("/gs")
+    public String showGameSessions(Model model) {
+        List<GameSession> gameSessions = gameSessionService.findAll();
+        Map<Integer, String> winners = new HashMap<>();
+        Map<Integer,String> losers = new HashMap<>();
+        for (GameSession gameSession : gameSessions) {
+            losers.put(gameSession.getId(), getLosers(gameSession.getId()));
+            winners.put(gameSession.getId(), getWinners(gameSession.getId()));
+        }
+        model.addAttribute("winners",winners);
+        model.addAttribute("losers",losers);
+        model.addAttribute("gameSessions", gameSessions);
+        return "gameSessions/gs";
+    }
+
+    public String getWinners(int gameSessionId) {
+        StringBuilder winnerNames = new StringBuilder();
+        List<SessionWinner> sessionWinners = sessionWinnerService.findByGameSession_Id(gameSessionId);
+
+        if (sessionWinners.isEmpty()) {
+            return "";
+        }
+
+        for (int i = 0; i < sessionWinners.size() - 1; i++) {
+            winnerNames.append(sessionWinners.get(i).getPlayer().getUsername()).append(", ");
+        }
+        winnerNames.append(sessionWinners.get(sessionWinners.size() - 1).getPlayer().getUsername());
+
+        return winnerNames.toString();
+    }
+
+    public String getLosers(int gameSessionId) {
+        List<SessionWinner> sessionWinners = sessionWinnerService.findByGameSession_Id(gameSessionId);
+        List<ParticipatingPlayer> allPlayers = participatingPlayerService.findByGameSession_Id(gameSessionId);
+
+
+        if (sessionWinners.isEmpty() || allPlayers.isEmpty()) {
+            return "";
+        }
+
+        Set<String> winnerUsernames = new HashSet<>();
+        for (SessionWinner winner : sessionWinners) {
+            winnerUsernames.add(winner.getPlayer().getUsername());
+        }
+
+        StringBuilder loserNames = new StringBuilder();
+        for (ParticipatingPlayer player : allPlayers) {
+            if (!winnerUsernames.contains(player.getPlayer().getUsername())) {
+                loserNames.append(player.getPlayer().getUsername()).append(", ");
+            }
+        }
+
+        // Remove trailing comma and space (if any)
+        if (loserNames.length() > 2) {
+            loserNames.setLength(loserNames.length() - 2);
+        }
+
+        return loserNames.toString();
+    }
+
+
+
+
+
+
 
     private String getPlayerBoardGameStats(@RequestParam(required = false) String selectedGameType, Model model) {
         List<Object[]> resultList;

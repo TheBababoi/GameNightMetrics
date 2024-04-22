@@ -11,18 +11,20 @@
 <h2>Select Winners</h2>
 
 <form th:action="@{/gamesessions/saveSession}" method="post">
-    <!-- Hidden input to pass the selected boardgameId -->
     <input type="hidden" name="boardgameId" th:value="${boardgameId}">
 
     <div th:each="player : ${players}">
         <input type="hidden" name="players" th:value="${player.id}">
     </div>
-    <!-- Display player names with checkboxes for selecting winners -->
     <div th:each="player : ${players}">
-        <!-- Display player name fetched from the list -->
         <label th:text="${player.username}"></label>
-        <!-- Checkbox to mark player as winner -->
         <input type="checkbox" name="winners" th:value="${player.id}">
+    </div>
+    <div class="form-group">
+        <label for="sessionDuration">Session Duration:</label>
+        <select class="form-control" id="sessionDuration" name="sessionDuration" required>
+            <option th:each="duration : ${durations}" th:value="${duration}" th:text="${duration}">[[${duration}]]</option>
+        </select>
     </div>
 
     <button type="submit">Save Session</button>

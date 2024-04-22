@@ -10,7 +10,7 @@ public class PlayerGameStats {
 
     @Id
     @EmbeddedId
-    private PlayerGameStatsPK id;  // Embeddable class as the primary key
+    private PlayerGameStatsPK id;
 
     @ManyToOne
     @JoinColumn(name = "player_id", insertable = false, updatable = false)
