@@ -31,6 +31,7 @@ public class GameSession {
     @JoinColumn(name = "game_id", referencedColumnName = "id", insertable = false, updatable = false)
     private BoardGame boardGame;
 
+
     @OneToMany(mappedBy = "gameSession", cascade = CascadeType.ALL)
     private List<ParticipatingPlayer> participatingPlayers = new ArrayList<>();
 

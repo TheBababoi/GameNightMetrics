@@ -4,6 +4,7 @@ import com.methodus.gamenightmetricsapp.dao.PlayerGameStatsRepository;
 import com.methodus.gamenightmetricsapp.entity.Player;
 import com.methodus.gamenightmetricsapp.entity.PlayerGameStats;
 import com.methodus.gamenightmetricsapp.entity.PlayerGameStatsPK;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,9 +20,10 @@ public class PlayerGameStatsServiceImpl implements  PlayerGameStatsService {
     }
 
     @Override
-    public Optional<PlayerGameStats> findById(PlayerGameStatsPK pk) {
+    public Optional<PlayerGameStats>  findById(PlayerGameStatsPK pk) {
         return playerGameStatsRepository.findById(pk);
     }
+
 
     @Override
     public List<PlayerGameStats> saveAll(List<PlayerGameStats> playerGameStatsList) {
@@ -41,13 +43,24 @@ public class PlayerGameStatsServiceImpl implements  PlayerGameStatsService {
     @Override
     public List<Object[]> getLeaderboardStats(String gameType) {
         if (gameType != null && !gameType.isEmpty()) {
-            // Call your repository method with game type filtering
+            // Call  repository method with game type filtering
             return playerGameStatsRepository.findLeaderboardStatsByGameType(gameType);
         } else {
-            // Call your repository method to retrieve all games
+            // Call repository method to retrieve all games
             return playerGameStatsRepository.findLeaderboardStats();
         }
 
+    }
+
+    @Override
+    @Transactional
+    public void delete(PlayerGameStatsPK id) {
+        playerGameStatsRepository.deleteById(id);
+    }
+
+    @Override
+    public void save(PlayerGameStats playerGameStats) {
+        playerGameStatsRepository.save(playerGameStats);
     }
 
 

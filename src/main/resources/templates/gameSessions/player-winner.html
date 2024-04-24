@@ -9,6 +9,9 @@
 </head>
 <body>
 <h2>Select Winners</h2>
+<div th:if="${errorMessage != null}" class="alert alert-danger" role="alert">
+    <span th:text="${errorMessage}"></span>
+</div>
 
 <form th:action="@{/gamesessions/saveSession}" method="post">
     <input type="hidden" name="boardgameId" th:value="${boardgameId}">

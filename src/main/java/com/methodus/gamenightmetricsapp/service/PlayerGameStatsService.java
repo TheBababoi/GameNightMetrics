@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface PlayerGameStatsService {
 
-    Optional<PlayerGameStats> findById(PlayerGameStatsPK pk);
+   Optional<PlayerGameStats>  findById(PlayerGameStatsPK pk);
 
     List<PlayerGameStats> saveAll(List<PlayerGameStats> playerGameStatsList);
 
@@ -21,5 +21,7 @@ public interface PlayerGameStatsService {
     List<Object[]> getLeaderboardStats(String gameType);
 
 
+    void delete(PlayerGameStatsPK id);
 
+    void save(PlayerGameStats playerGameStats);
 }

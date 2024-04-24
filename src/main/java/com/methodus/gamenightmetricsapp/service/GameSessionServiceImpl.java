@@ -25,4 +25,24 @@ public class GameSessionServiceImpl implements GameSessionService{
     public List<GameSession> findAll() {
         return gameSessionRepository.findAll();
     }
+
+    @Override
+    public GameSession findById(int id) {
+        return gameSessionRepository.findById(id);
+    }
+
+    @Override
+    public List<GameSession> getGameSessions(int boardGameId) {
+        if (boardGameId!=0) {
+            return gameSessionRepository.findAllByGameId(boardGameId);
+        } else {
+            return gameSessionRepository.findAll();
+        }
+
+    }
+
+    @Override
+    public void delete(int id) {
+        gameSessionRepository.deleteById(id);
+    }
 }

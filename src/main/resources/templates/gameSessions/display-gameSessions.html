@@ -11,6 +11,18 @@
 </head>
 <body>
 <h1 style="text-align: center; margin-bottom: 20px;">Game Sessions</h1>
+
+<div class="mb-3">
+    <form th:action="@{/gamesessions/gamesessionspost}" method="post">
+        <select name="boardGameId" class="form-select">
+            <option value="">All Games</option>
+            <option th:each="boardgame : ${boardgames}" th:value="${boardgame.id}" th:text="${boardgame.name}">All Games</option>
+        </select>
+        <button type="submit" class="btn btn-primary ms-2">Filter</button>
+    </form>
+</div>
+
+<div style="width: 80%; margin: 0 auto; overflow: hidden;">
 <table class="table table-bordered table-striped table-dark">
     <tr>
         <th>Board Game</th>
@@ -19,16 +31,26 @@
         <th>Total Players</th>
         <th>Won</th>
         <th>Lost</th>
+        <th>Actions</th>
     </tr>
     <tr th:each="gameSession : ${gameSessions}">
         <td th:text="${gameSession.boardGame.name}"></td>
-        <td th:text="${gameSession.sessionDate}"></td>
+        <td th:text="${#dates.format(gameSession.sessionDate, 'yyyy-MM-dd')}"></td>
         <td th:text="${gameSession.sessionDuration}"></td>
         <td th:text="${gameSession.totalPlayers}"></td>
         <td th:text="${winners[gameSession.id]}"></td>
         <td th:text="${losers[gameSession.id]}"></td>
+        <td>
+            <div class="button-group">
+                <a th:href="@{/gamesessions/delete(gameSessionId=${gameSession.id})}" class="btn btn-danger btn-sm"
+                   onclick="if (!(confirm('Are you certain you wish to delete this session?'))) return false">
+                    Delete Session
+                </a>
+            </div>
+        </td>
     </tr>
 </table>
+</div>
 
 <a th:href="@{/home}" class="text-decoration-none float-end" style="font-size: 1.2em; margin-right: 60px;">
     Back to Base </a>

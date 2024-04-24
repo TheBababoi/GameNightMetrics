@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SessionWinnerServiceImpl implements SessionWinnerService{
@@ -28,6 +29,6 @@ public class SessionWinnerServiceImpl implements SessionWinnerService{
 
     @Override
     public List<SessionWinner> findByGameSession_Id(int gameSessionId) {
-        return sessionWinnerRepository.findAllByGameSession(gameSessionRepository.findById(gameSessionId));
+        return sessionWinnerRepository.findAllByGameSession(Optional.ofNullable(gameSessionRepository.findById(gameSessionId)));
     }
 }

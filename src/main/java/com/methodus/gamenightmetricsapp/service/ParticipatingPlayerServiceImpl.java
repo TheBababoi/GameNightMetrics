@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -30,7 +31,7 @@ public class ParticipatingPlayerServiceImpl implements ParticipatingPlayerServic
 
     @Override
     public List<ParticipatingPlayer> findByGameSession_Id(int gameSessionId) {
-        return playerRepository.findAllByGameSession(gameSessionRepository.findById(gameSessionId));
+        return playerRepository.findAllByGameSession(Optional.ofNullable(gameSessionRepository.findById(gameSessionId)));
     }
 
 

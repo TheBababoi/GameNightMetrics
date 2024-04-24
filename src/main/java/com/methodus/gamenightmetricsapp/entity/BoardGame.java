@@ -2,7 +2,9 @@ package com.methodus.gamenightmetricsapp.entity;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name="boardgame")
@@ -42,6 +44,12 @@ public class BoardGame {
             joinColumns = @JoinColumn(name = "game_id"),
             inverseJoinColumns = @JoinColumn(name = "player_id"))
     private Collection<Player> gameratings;
+
+
+
+   @OneToMany(mappedBy = "boardGame", cascade = CascadeType.REMOVE)
+   private List<GameSession> gameSessions = new ArrayList<>();
+
 
     public BoardGame() {
     }

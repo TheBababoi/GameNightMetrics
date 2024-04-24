@@ -28,6 +28,12 @@ CREATE TABLE Player (
 
 INSERT INTO Player (username, password, skill_level, play_style, preferred_game_type)
 VALUES ('Methodus', '$2a$12$HRqFg5UzUpg4E3Th.a07geTjhm6xfKu0rOc.EG5j.qnAq8lUMEJ/W', 'skill_level_here', 'play_style_here', 'preferred_game_type_here');
+INSERT INTO Player (username, password, skill_level, play_style, preferred_game_type)
+VALUES ('Tzaxis', '$2a$12$HRqFg5UzUpg4E3Th.a07geTjhm6xfKu0rOc.EG5j.qnAq8lUMEJ/W', 'skill_level_here', 'play_style_here', 'preferred_game_type_here');
+INSERT INTO Player (username, password, skill_level, play_style, preferred_game_type)
+VALUES ('Simos', '$2a$12$HRqFg5UzUpg4E3Th.a07geTjhm6xfKu0rOc.EG5j.qnAq8lUMEJ/W', 'skill_level_here', 'play_style_here', 'preferred_game_type_here');
+INSERT INTO Player (username, password, skill_level, play_style, preferred_game_type)
+VALUES ('Xaristos', '$2a$12$HRqFg5UzUpg4E3Th.a07geTjhm6xfKu0rOc.EG5j.qnAq8lUMEJ/W', 'skill_level_here', 'play_style_here', 'preferred_game_type_here');
 
 CREATE TABLE BoardGame (
   id INT PRIMARY KEY AUTO_INCREMENT,
@@ -88,10 +94,10 @@ CREATE TABLE game_session (
   session_id INT PRIMARY KEY AUTO_INCREMENT,
   game_id INT NOT NULL,
   session_date DATE NOT NULL,
-  session_duration TIME NOT NULL,
+  session_duration varchar(255),
   total_players INT NOT NULL,
   FOREIGN KEY (game_id) REFERENCES BoardGame(id)
-    ON DELETE CASCADE ON UPDATE NO ACTION
+     ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE participating_players (
@@ -109,7 +115,7 @@ CREATE TABLE session_winners (
   player_id INT NOT NULL,
   PRIMARY KEY (session_id, player_id),
   FOREIGN KEY (session_id) REFERENCES game_session(session_id)
-    ON DELETE CASCADE ON UPDATE NO ACTION,
+    ON DELETE NO ACTION ON UPDATE NO ACTION,
   FOREIGN KEY (player_id) REFERENCES Player(id)
     ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
