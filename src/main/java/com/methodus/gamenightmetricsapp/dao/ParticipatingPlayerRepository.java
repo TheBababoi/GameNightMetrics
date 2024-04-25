@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ParticipatingPlayerRepository extends JpaRepository<ParticipatingPlayer, GameSessionPlayerPk> {
-    public List<ParticipatingPlayer> findAllByGameSession(Optional<GameSession> gameSession);
+    List<ParticipatingPlayer> findAllByGameSession(Optional<GameSession> gameSession);
 
 }
 

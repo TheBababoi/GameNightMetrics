@@ -1,34 +1,29 @@
 package com.methodus.gamenightmetricsapp.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Pattern;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-
-
 
 import java.util.Collection;
 
 @Entity
-@Table(name ="player")
+@Table(name = "player")
 public class Player {
 
-    // define fields
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
 
-    @Column(name="username")
+    @Column(name = "username")
     private String username;
 
-    @Column(name="password")
+    @Column(name = "password")
     private String password;
-    @Column(name="skill_level")
+    @Column(name = "skill_level")
     private String skillLevel;
-    @Column(name="play_style")
+    @Column(name = "play_style")
     private String playStyle;
-    @Column(name="preferred_game_type")
+    @Column(name = "preferred_game_type")
     private String preferredGameType;
     @Column(name = "total_games_played")
     private int totalGamesPlayed;
@@ -52,10 +47,6 @@ public class Player {
     private Collection<BoardGame> boardgameratings;
 
 
-
-    // define constructors
-
-
     public Player() {
     }
 
@@ -75,9 +66,6 @@ public class Player {
         this.preferredGameType = preferredGameType;
         this.roles = roles;
     }
-
-    // define getters/setters
-
 
     public int getId() {
         return id;
@@ -142,11 +130,6 @@ public class Player {
     public void setTotalGamesPlayed(int totalGamesPlayed) {
         this.totalGamesPlayed = totalGamesPlayed;
     }
-
-
-
-    // define toString
-
 
     @Override
     public String toString() {

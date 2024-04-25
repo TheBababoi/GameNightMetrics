@@ -1,7 +1,6 @@
 package com.methodus.gamenightmetricsapp.controller;
 
 import com.methodus.gamenightmetricsapp.config.PlayerConfig;
-import com.methodus.gamenightmetricsapp.entity.BoardGame;
 import com.methodus.gamenightmetricsapp.entity.DtoPlayer;
 import com.methodus.gamenightmetricsapp.entity.GameRatings;
 import com.methodus.gamenightmetricsapp.entity.Player;
@@ -15,8 +14,6 @@ import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -33,12 +30,11 @@ import java.util.logging.Logger;
 @Controller
 @RequestMapping("/players")
 public class PlayerController {
-    private PlayerService playerService;
+    private final PlayerService playerService;
 
-    private PlayerConfig playerConfig;
-    private GameRatingsService gameRatingsService;
-    private Logger logger = Logger.getLogger(getClass().getName());
-
+    private final PlayerConfig playerConfig;
+    private final GameRatingsService gameRatingsService;
+    private final Logger logger = Logger.getLogger(getClass().getName());
 
 
     @Autowired
@@ -49,19 +45,19 @@ public class PlayerController {
     }
 
 
-
     @GetMapping("/list")
-    public String listOfPlayers(Model model){
+    public String listOfPlayers(Model model) {
         //get the list of players from th db
         List<Player> players = playerService.findAll();
         //add the list to the model
-        model.addAttribute("players",players);
+        model.addAttribute("players", players);
         return "players/list-players";
     }
+
     @GetMapping("/showFormForAdd")
     public String showFormForAdd(Model model) {
 
-        model.addAttribute("player",new DtoPlayer());
+        model.addAttribute("player", new DtoPlayer());
         model.addAttribute("skillLevels", playerConfig.SKILL_LEVELS);
         model.addAttribute("preferredGameTypes", playerConfig.GAME_TYPES);
         model.addAttribute("playStyles", playerConfig.PLAYER_TYPES);
@@ -73,7 +69,7 @@ public class PlayerController {
     @GetMapping("/showFormForRegister")
     public String showFormForRegister(Model model) {
 
-        model.addAttribute("player",new DtoPlayer());
+        model.addAttribute("player", new DtoPlayer());
         model.addAttribute("skillLevels", playerConfig.SKILL_LEVELS);
         model.addAttribute("preferredGameTypes", playerConfig.GAME_TYPES);
         model.addAttribute("playStyles", playerConfig.PLAYER_TYPES);
@@ -83,31 +79,30 @@ public class PlayerController {
     }
 
     @GetMapping("/showFormForUpdate")
-    public String showFormForUpdate(@RequestParam("playerId") int id, Model model){
+    public String showFormForUpdate(@RequestParam("playerId") int id, Model model) {
         // get the player from the service
         Player player = playerService.findById(id);
-        doUpdate(player,model);
+        doUpdate(player, model);
 
         //send over the form
         return "players/player-form";
     }
 
     @GetMapping("/showFormForCurrentUserUpdate")
-    public String showFormForCurrentUserUpdate(HttpServletRequest request, Model model){
+    public String showFormForCurrentUserUpdate(HttpServletRequest request, Model model) {
         // Retrieve the player object from the session
         Player player = (Player) request.getSession().getAttribute("player");
 
         if (player != null) {
-            System.out.println(player);
-
-            doUpdate(player, model);}
+            doUpdate(player, model);
+        }
 
 
         return "players/player-form";
     }
 
     @GetMapping("/delete")
-    public String delete(@RequestParam("playerId") int id){
+    public String delete(@RequestParam("playerId") int id) {
         // delete the player
         playerService.deleteById(id);
         //redirect to the /players/list
@@ -117,11 +112,11 @@ public class PlayerController {
     @PostMapping("/save")
     public String savePlayer(@Valid @ModelAttribute("player") DtoPlayer dtoPlayer,
                              BindingResult bindingResult,
-                             HttpSession session, Model model){
+                             HttpSession session, Model model) {
         logger.info("Processing Player form for: " + dtoPlayer.getUsername());
 
         // form validation
-        if (bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
             addData(model);
             return "players/player-form";
         }
@@ -129,7 +124,7 @@ public class PlayerController {
         // check the database if username already exists
         Player player = playerService.findByPlayerName(dtoPlayer.getUsername());
         //if the is not being created or the player is being updated and is not getting the same old name
-        if ((player != null) && (player.getId() != dtoPlayer.getId())){
+        if ((player != null) && (player.getId() != dtoPlayer.getId())) {
             model.addAttribute("player", dtoPlayer);
             addData(model);
             model.addAttribute("formError", "User name already exists.");
@@ -143,12 +138,13 @@ public class PlayerController {
 
         // place player in the web http session for later use
         Player loggedInPlayer = (Player) session.getAttribute("player");
-        if (loggedInPlayer!=null){
+        if (loggedInPlayer != null) {
             if (dtoPlayer.getId() == loggedInPlayer.getId()) {
                 // DTO player ID matches the logged-in player ID
-                session.setAttribute("player", playerService.findById(dtoPlayer.getId()));}
+                session.setAttribute("player", playerService.findById(dtoPlayer.getId()));
+            }
         }
-        //check if its a registering user or not
+        //check if it is a registering user or not
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
             // Registering user or anonymous user
@@ -169,7 +165,7 @@ public class PlayerController {
         webDataBinder.registerCustomEditor(String.class, stringTrimmerEditor);
     }
 
-    public void transferData(Player player, DtoPlayer dtoPlayer){
+    public void transferData(Player player, DtoPlayer dtoPlayer) {
         dtoPlayer.setId(player.getId());
         dtoPlayer.setUsername(player.getUsername());
         dtoPlayer.setPassword(player.getPassword());
@@ -178,13 +174,13 @@ public class PlayerController {
         dtoPlayer.setPreferredGameType(player.getPreferredGameType());
     }
 
-    public void addData(Model model){
+    public void addData(Model model) {
         model.addAttribute("skillLevels", playerConfig.SKILL_LEVELS);
         model.addAttribute("preferredGameTypes", playerConfig.GAME_TYPES);
         model.addAttribute("playStyles", playerConfig.PLAYER_TYPES);
     }
 
-    private void doUpdate(Player player, Model model){
+    private void doUpdate(Player player, Model model) {
         //transfer the data to the dto
         DtoPlayer dtoPlayer = new DtoPlayer();
         transferData(player, dtoPlayer);
@@ -207,15 +203,15 @@ public class PlayerController {
 
 
     }
+
     @GetMapping("/showRatings")
     public String showRatings(@RequestParam("playerId") int playerId, Model model) {
         List<GameRatings> gameRatingsList = gameRatingsService.getGameRatingsForPlayer(playerId);
         Player player = playerService.findById(playerId);
-        model.addAttribute("player",player);
-        model.addAttribute("gameRatings",gameRatingsList);
+        model.addAttribute("player", player);
+        model.addAttribute("gameRatings", gameRatingsList);
         return "players/ratings-display";
     }
-
 
 
 }

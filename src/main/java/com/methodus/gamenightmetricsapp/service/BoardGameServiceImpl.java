@@ -3,16 +3,15 @@ package com.methodus.gamenightmetricsapp.service;
 import com.methodus.gamenightmetricsapp.dao.BoardGameRepository;
 import com.methodus.gamenightmetricsapp.entity.BoardGame;
 import com.methodus.gamenightmetricsapp.entity.DtoBoardGame;
-import com.methodus.gamenightmetricsapp.entity.Player;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
 @Service
 public class BoardGameServiceImpl implements BoardGameService {
-    private BoardGameRepository boardGameRepository;
+    private final BoardGameRepository boardGameRepository;
 
     @Autowired
     public BoardGameServiceImpl(BoardGameRepository boardGameRepository) {
@@ -28,10 +27,9 @@ public class BoardGameServiceImpl implements BoardGameService {
     public BoardGame findById(int id) {
         Optional<BoardGame> result = boardGameRepository.findById(id);
         BoardGame boardGame;
-        if(result.isPresent()){
+        if (result.isPresent()) {
             boardGame = result.get();
-        }
-        else {
+        } else {
             // we didn't find the boardgame
             throw new RuntimeException("Did not find boardgame id - " + id);
         }
@@ -43,9 +41,9 @@ public class BoardGameServiceImpl implements BoardGameService {
         BoardGame boardGame;
         //check if new boardgame or boardgame update
         //if update it will already have id
-        if (dtoBoardGame.getId()==0){
-            boardGame = new BoardGame();}
-        else {
+        if (dtoBoardGame.getId() == 0) {
+            boardGame = new BoardGame();
+        } else {
             boardGame = findById(dtoBoardGame.getId());
         }
 

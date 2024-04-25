@@ -6,18 +6,15 @@ import jakarta.persistence.*;
 @Table(name = "participating_players")
 public class ParticipatingPlayer {
 
-
     @EmbeddedId
     private GameSessionPlayerPk id;
 
-
     @ManyToOne
-    @JoinColumn(name = "session_id", nullable = false,insertable=false, updatable=false)
+    @JoinColumn(name = "session_id", nullable = false, insertable = false, updatable = false)
     private GameSession gameSession;
 
-
     @ManyToOne
-    @JoinColumn(name = "player_id", nullable = false, insertable=false, updatable=false)
+    @JoinColumn(name = "player_id", nullable = false, insertable = false, updatable = false)
     private Player player;
 
     public GameSessionPlayerPk getId() {
@@ -28,9 +25,6 @@ public class ParticipatingPlayer {
         this.id = id;
     }
 
-    public GameSession getGameSession() {
-        return gameSession;
-    }
 
     public void setGameSession(GameSession gameSession) {
         this.gameSession = gameSession;

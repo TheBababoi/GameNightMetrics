@@ -11,10 +11,7 @@ import java.util.Optional;
 
 public interface PlayerGameStatsRepository extends JpaRepository<PlayerGameStats, Integer> {
 
-
-
     Optional<PlayerGameStats> findById(PlayerGameStatsPK pk);
-
 
     @Query("SELECT p FROM PlayerGameStats p WHERE p.boardGame.id = :id ORDER BY p.wins DESC, p.winLossRatio DESC")
     List<PlayerGameStats> findByBoardGameId(@Param("id") int id);

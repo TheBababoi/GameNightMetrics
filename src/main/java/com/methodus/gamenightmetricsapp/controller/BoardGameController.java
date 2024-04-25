@@ -23,10 +23,11 @@ import java.util.logging.Logger;
 @Controller
 @RequestMapping("/boardgames")
 public class BoardGameController {
-    private BoardGameService boardGameService;
-    private BoardGameConfig boardGameConfig;
-    private GameRatingsService gameRatingsService;
-    private Logger logger = Logger.getLogger(getClass().getName());
+    private final BoardGameService boardGameService;
+    private final BoardGameConfig boardGameConfig;
+    private final GameRatingsService gameRatingsService;
+    private final Logger logger = Logger.getLogger(getClass().getName());
+
     @Autowired
     public BoardGameController(BoardGameService boardGameService, BoardGameConfig boardGameConfig, GameRatingsService gameRatingsService) {
         this.boardGameService = boardGameService;
@@ -36,27 +37,27 @@ public class BoardGameController {
 
 
     @GetMapping("/list")
-    public String listOfBoardgames(Model model){
+    public String listOfBoardgames(Model model) {
         //get the list of boardgames from th db
         List<BoardGame> boardGames = boardGameService.findAll();
         //add the list to the model
-        model.addAttribute("boardgames",boardGames);
+        model.addAttribute("boardgames", boardGames);
         return "boardgames/list-boardgames";
     }
 
     @GetMapping("/showFormForAdd")
     public String showFormForAdd(Model model) {
 
-        model.addAttribute("boardgame",new DtoBoardGame());
-        model.addAttribute("gameTypes",boardGameConfig.GAME_TYPES);
-        model.addAttribute("playerNumbers",boardGameConfig.PLAYER_NUMBERS);
+        model.addAttribute("boardgame", new DtoBoardGame());
+        model.addAttribute("gameTypes", boardGameConfig.GAME_TYPES);
+        model.addAttribute("playerNumbers", boardGameConfig.PLAYER_NUMBERS);
 
         return "boardgames/boardgame-form";
 
     }
 
     @GetMapping("/showFormForUpdate")
-    public String showFormForUpdate(@RequestParam("boardgameId") int id, Model model){
+    public String showFormForUpdate(@RequestParam("boardgameId") int id, Model model) {
         // get the boardgame from the service
         BoardGame boardGame = boardGameService.findById(id);
         //transfer the data to the dto
@@ -67,9 +68,9 @@ public class BoardGameController {
         dtoBoardGame.setMaxPlayers(boardGame.getMaxPlayers());
         dtoBoardGame.setMinPlayers(boardGame.getMinPlayers());
         //set boardgame in the model to precalculate the form
-        model.addAttribute("boardgame",dtoBoardGame);
-        model.addAttribute("gameTypes",boardGameConfig.GAME_TYPES);
-        model.addAttribute("playerNumbers",boardGameConfig.PLAYER_NUMBERS);
+        model.addAttribute("boardgame", dtoBoardGame);
+        model.addAttribute("gameTypes", boardGameConfig.GAME_TYPES);
+        model.addAttribute("playerNumbers", boardGameConfig.PLAYER_NUMBERS);
 
         // Pre-selected game types (split into a list)
         List<String> preselectedGameTypes = Collections.singletonList(boardGame.getGameType());
@@ -80,9 +81,6 @@ public class BoardGameController {
             preselectedGameTypes = new ArrayList<>();  // Initialize empty list if null
         }
 
-        // Print the preselectedGameTypes list for verification
-        System.out.println("Preselected Game Types: " + preselectedGameTypes);
-
         model.addAttribute("preselectedGameTypes", preselectedGameTypes);
 
 
@@ -91,12 +89,13 @@ public class BoardGameController {
     }
 
     @GetMapping("/delete")
-    public String delete(@RequestParam("boardgameId") int id){
+    public String delete(@RequestParam("boardgameId") int id) {
         // delete the boardgame
         boardGameService.deleteById(id);
         //redirect to the /boardgames/list
         return "redirect:/boardgames/list";
     }
+
     @PostMapping("/save")
     public String saveBoardGame(@Valid @ModelAttribute("boardgame") DtoBoardGame dtoBoardGame, BindingResult bindingResult,
                                 Model model) {
@@ -110,7 +109,7 @@ public class BoardGameController {
         }
 
         //check if the minimum players are >= max players
-        if (dtoBoardGame.getMinPlayers()>dtoBoardGame.getMaxPlayers()){
+        if (dtoBoardGame.getMinPlayers() > dtoBoardGame.getMaxPlayers()) {
             model.addAttribute("boardgame", dtoBoardGame);
             model.addAttribute("gameTypes", boardGameConfig.GAME_TYPES);
             model.addAttribute("playerNumbers", boardGameConfig.PLAYER_NUMBERS);
@@ -135,18 +134,18 @@ public class BoardGameController {
 
         //save the boardgame
         boardGameService.save(dtoBoardGame);
-            return "redirect:/boardgames/list";
+        return "redirect:/boardgames/list";
     }
 
     @GetMapping("/showFormForRating")
-    public String showFormForRating(@RequestParam("boardgameId") int id, Model model,HttpServletRequest request) {
+    public String showFormForRating(@RequestParam("boardgameId") int id, Model model, HttpServletRequest request) {
         BoardGame boardGame = boardGameService.findById(id);
-        model.addAttribute("boardgame",boardGame);
+        model.addAttribute("boardgame", boardGame);
         //set the gameRatings in the model to prepopulate the form in case the player already made a Rating
         Player player = (Player) request.getSession().getAttribute("player");
         GameRatingsPK gameRatingsPK = new GameRatingsPK(player.getId(), boardGame.getId());
         GameRatings gameRatings = gameRatingsService.findById(gameRatingsPK);
-        model.addAttribute("gameRatings",gameRatings);
+        model.addAttribute("gameRatings", gameRatings);
         return "boardgames/boardgame-rating";
 
     }
@@ -161,8 +160,8 @@ public class BoardGameController {
                              @RequestParam(value = "comment", required = false) String comment,
                              HttpServletRequest request) {
         Player player = (Player) request.getSession().getAttribute("player");
-        GameRatingsPK gameRatingsPK = new GameRatingsPK(player.getId(),boardgameId);
-        GameRatings gameRatings = new GameRatings(gameRatingsPK,totalRating,gameplayrating,themeRating,visualRating,difficultyRating,comment);
+        GameRatingsPK gameRatingsPK = new GameRatingsPK(player.getId(), boardgameId);
+        GameRatings gameRatings = new GameRatings(gameRatingsPK, totalRating, gameplayrating, themeRating, visualRating, difficultyRating, comment);
         gameRatingsService.save(gameRatings);
 
         return "boardgames/rating-success";
@@ -172,15 +171,12 @@ public class BoardGameController {
     public String showBoardgameRatings(@RequestParam("boardgameId") int boardgameId, Model model) {
         List<GameRatings> gameRatingsList = gameRatingsService.getGameRatingsForBoardgame(boardgameId);
         BoardGame boardGame = boardGameService.findById(boardgameId);
-        model.addAttribute("boardgame",boardGame);
-        model.addAttribute("gameRatings",gameRatingsList);
-        System.out.println(calculateAverageRatings(gameRatingsList));
-        model.addAttribute("averages",calculateAverageRatings(gameRatingsList));
-        model.addAttribute("numberOfRatings",gameRatingsList.size());
+        model.addAttribute("boardgame", boardGame);
+        model.addAttribute("gameRatings", gameRatingsList);
+        model.addAttribute("averages", calculateAverageRatings(gameRatingsList));
+        model.addAttribute("numberOfRatings", gameRatingsList.size());
         return "boardgames/ratings-display";
     }
-
-
 
 
     @InitBinder
@@ -194,10 +190,9 @@ public class BoardGameController {
     public static List<Double> calculateAverageRatings(List<GameRatings> gameRatingsList) {
         List<Double> averageRatings = new ArrayList<>();
         if (gameRatingsList == null || gameRatingsList.isEmpty()) {
-            for (int i = 0; i <5 ; i++) {
+            for (int i = 0; i < 5; i++) {
                 averageRatings.add(0.0);
             }
-            System.out.println(averageRatings.get(0));
             return averageRatings;
         }
 
@@ -222,7 +217,6 @@ public class BoardGameController {
 
         return averageRatings;
     }
-
 
 
 }

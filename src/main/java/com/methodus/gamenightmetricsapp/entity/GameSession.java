@@ -89,19 +89,4 @@ public class GameSession {
         this.boardGame = boardGame;
     }
 
-    public List<ParticipatingPlayer> getParticipatingPlayers() {
-        return participatingPlayers;
-    }
-
-    public void setParticipatingPlayers(List<ParticipatingPlayer> participatingPlayers) {
-        this.participatingPlayers = participatingPlayers;
-    }
-
-    public List<SessionWinner> getSessionWinners() {
-        return sessionWinners;
-    }
-
-    public void setSessionWinners(List<SessionWinner> sessionWinners) {
-        this.sessionWinners = sessionWinners;
-    }
 }

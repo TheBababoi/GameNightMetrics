@@ -8,10 +8,8 @@ public class SessionWinner {
 
     @EmbeddedId
     private GameSessionPlayerPk id;
-
-
     @ManyToOne
-    @JoinColumn(name = "player_id", insertable=false, updatable=false)
+    @JoinColumn(name = "player_id", insertable = false, updatable = false)
     private Player player;
 
     @ManyToOne

@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Table(name="boardgame")
+@Table(name = "boardgame")
 public class BoardGame {
 
 
@@ -15,21 +15,21 @@ public class BoardGame {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
-    @Column(name="name")
+    @Column(name = "name")
     private String name;
-    @Column(name="game_type")
+    @Column(name = "game_type")
     private String gameType;
-    @Column(name="number_of_max_players")
+    @Column(name = "number_of_max_players")
     private int maxPlayers;
-    @Column(name="number_of_min_players")
+    @Column(name = "number_of_min_players")
     private int minPlayers;
-    @Column(name="total_games_played")
+    @Column(name = "total_games_played")
     private int totalGamesPlayed;
-    @Column(name="average_total_rating")
+    @Column(name = "average_total_rating")
     private double averageTotalRating;
-    @Column(name="average_difficulty_rating")
+    @Column(name = "average_difficulty_rating")
     private int averageDifficultyRating;
-    @Column(name="number_of_ratings")
+    @Column(name = "number_of_ratings")
     private int numberOfRatings;
 
 
@@ -46,9 +46,8 @@ public class BoardGame {
     private Collection<Player> gameratings;
 
 
-
-   @OneToMany(mappedBy = "boardGame", cascade = CascadeType.REMOVE)
-   private List<GameSession> gameSessions = new ArrayList<>();
+    @OneToMany(mappedBy = "boardGame", cascade = CascadeType.REMOVE)
+    private List<GameSession> gameSessions = new ArrayList<>();
 
 
     public BoardGame() {

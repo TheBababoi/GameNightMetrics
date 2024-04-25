@@ -7,7 +7,10 @@ import java.util.List;
 
 public interface GameRatingsService {
     GameRatings save(GameRatings gameRatings);
+
     List<GameRatings> getGameRatingsForBoardgame(int boardgameId);
+
     List<GameRatings> getGameRatingsForPlayer(int playerId);
+
     GameRatings findById(GameRatingsPK gameRatingsPK);
 }

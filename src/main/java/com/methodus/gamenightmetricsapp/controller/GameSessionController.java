@@ -1,34 +1,33 @@
 package com.methodus.gamenightmetricsapp.controller;
 
 import com.methodus.gamenightmetricsapp.config.BoardGameConfig;
-import com.methodus.gamenightmetricsapp.config.PlayerConfig;
 import com.methodus.gamenightmetricsapp.entity.*;
 import com.methodus.gamenightmetricsapp.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.*;
-import java.util.logging.Logger;
 
 @Controller
 @RequestMapping("/gamesessions")
 public class GameSessionController {
-    private PlayerService playerService;
+    private final PlayerService playerService;
 
-    private PlayerConfig playerConfig;
-    private BoardGameService boardGameService;
-    private BoardGameConfig boardGameConfig;
-    private PlayerGameStatsService playerGameStatsService;
-    private GameSessionService gameSessionService;
-    private ParticipatingPlayerService participatingPlayerService;
-    private SessionWinnerService sessionWinnerService;
-    private Logger logger = Logger.getLogger(getClass().getName());
+    private final BoardGameService boardGameService;
+    private final BoardGameConfig boardGameConfig;
+    private final PlayerGameStatsService playerGameStatsService;
+    private final GameSessionService gameSessionService;
+    private final ParticipatingPlayerService participatingPlayerService;
+    private final SessionWinnerService sessionWinnerService;
+
     @Autowired
-    public GameSessionController(PlayerService playerService, PlayerConfig playerConfig, BoardGameService boardGameService, BoardGameConfig boardGameConfig, PlayerGameStatsService playerGameStatsService, GameSessionService gameSessionService, ParticipatingPlayerService participatingPlayerService, SessionWinnerService sessionWinnerService) {
+    public GameSessionController(PlayerService playerService, BoardGameService boardGameService, BoardGameConfig boardGameConfig, PlayerGameStatsService playerGameStatsService, GameSessionService gameSessionService, ParticipatingPlayerService participatingPlayerService, SessionWinnerService sessionWinnerService) {
         this.playerService = playerService;
-        this.playerConfig = playerConfig;
         this.boardGameService = boardGameService;
         this.boardGameConfig = boardGameConfig;
         this.playerGameStatsService = playerGameStatsService;
@@ -38,13 +37,12 @@ public class GameSessionController {
     }
 
 
-
     @GetMapping("/showGameList")
-    public String showGamelist(Model model){
+    public String showGamelist(Model model) {
         //get the list of boardgames from th db
         List<BoardGame> boardGames = boardGameService.findAll();
         //add the list to the model
-        model.addAttribute("boardgames",boardGames);
+        model.addAttribute("boardgames", boardGames);
 
         return "gameSessions/list-games";
     }
@@ -53,11 +51,11 @@ public class GameSessionController {
     public String showPlayerNumbers(@RequestParam("boardgameId") int id, Model model) {
         BoardGame boardGame = boardGameService.findById(id);
         List<Integer> possibleNumberOfPlayers = new ArrayList<>();
-        for (int i = boardGame.getMinPlayers(); i <=boardGame.getMaxPlayers() ; i++) {
+        for (int i = boardGame.getMinPlayers(); i <= boardGame.getMaxPlayers(); i++) {
             possibleNumberOfPlayers.add(i);
         }
         model.addAttribute("boardgame", boardGame);
-        model.addAttribute("possibleNumberOfPlayers",possibleNumberOfPlayers);
+        model.addAttribute("possibleNumberOfPlayers", possibleNumberOfPlayers);
         return "gameSessions/player-numbers";
     }
 
@@ -66,14 +64,14 @@ public class GameSessionController {
                                 @RequestParam("selectedPlayerNumber") int selectedPlayerNumber,
                                 Model model) {
         //Validation
-        if (selectedPlayerNumber > playerService.count()){
+        if (selectedPlayerNumber > playerService.count()) {
             BoardGame boardGame = boardGameService.findById(boardgameId);
             List<Integer> possibleNumberOfPlayers = new ArrayList<>();
-            for (int i = boardGame.getMinPlayers(); i <=boardGame.getMaxPlayers() ; i++) {
+            for (int i = boardGame.getMinPlayers(); i <= boardGame.getMaxPlayers(); i++) {
                 possibleNumberOfPlayers.add(i);
             }
             model.addAttribute("boardgame", boardGame);
-            model.addAttribute("possibleNumberOfPlayers",possibleNumberOfPlayers);
+            model.addAttribute("possibleNumberOfPlayers", possibleNumberOfPlayers);
             model.addAttribute("errorMessage", "Error: Not enough players in the Database");
             return "gameSessions/player-numbers";
         }
@@ -90,22 +88,21 @@ public class GameSessionController {
                                 @RequestParam("selectedPlayers") List<Integer> selectedPlayers, Model model) {
         ArrayList<Player> players = new ArrayList<>();
         //Validation
-        if (hasDuplicates(selectedPlayers)){
+        if (hasDuplicates(selectedPlayers)) {
             List<Player> playerList = playerService.findAll();
-            model.addAttribute("selectedPlayerNumber",selectedPlayers.size());
+            model.addAttribute("selectedPlayerNumber", selectedPlayers.size());
             model.addAttribute("players", playerList);
             model.addAttribute("boardgameId", boardgameId);
             model.addAttribute("errorMessage", "Error: Please choose only unique players");
             return "gameSessions/player-names";
         }
-        for (Integer id : selectedPlayers){
+        for (Integer id : selectedPlayers) {
             players.add(playerService.findById(id));
         }
-        System.out.println(players);
-        model.addAttribute("durations",boardGameConfig.GAME_TIME);
-      model.addAttribute("players",players);
-      model.addAttribute("boardgameId",boardgameId);
-      return "gameSessions/player-winner";
+        model.addAttribute("durations", boardGameConfig.GAME_TIME);
+        model.addAttribute("players", players);
+        model.addAttribute("boardgameId", boardgameId);
+        return "gameSessions/player-winner";
     }
 
 
@@ -113,28 +110,26 @@ public class GameSessionController {
     public String saveSession(@RequestParam("boardgameId") int boardgameId,
                               @RequestParam("players") List<Integer> players,
                               @RequestParam("sessionDuration") String duration,
-                              @RequestParam(name = "winners", required = false) List<Integer> winners,Model model)
-                              {
-        if(winners==null){
-            model.addAttribute("durations",boardGameConfig.GAME_TIME);
+                              @RequestParam(name = "winners", required = false) List<Integer> winners, Model model) {
+        if (winners == null) {
+            model.addAttribute("durations", boardGameConfig.GAME_TIME);
             List<Player> playerList = new ArrayList<>();
-            for (Integer player :players){
+            for (Integer player : players) {
                 playerList.add(playerService.findById(player));
             }
-            model.addAttribute("players",playerList);
-            model.addAttribute("boardgameId",boardgameId);
+            model.addAttribute("players", playerList);
+            model.addAttribute("boardgameId", boardgameId);
             model.addAttribute("errorMessage", "Error: Please choose at least one winner");
             return "gameSessions/player-winner";
         }
         Optional<BoardGame> boardGame = Optional.ofNullable(boardGameService.findById(boardgameId));
-        if (boardGame.isEmpty()){
+        if (boardGame.isEmpty()) {
             throw new RuntimeException("Board Game not found");
-        }else {
+        } else {
             BoardGame tempBoardGame = boardGame.get();
             DtoBoardGame dtoBoardGame = new DtoBoardGame();
             dtoBoardGame.copyFromBoardGame(tempBoardGame);
-            dtoBoardGame.setTotalGamesPlayed(dtoBoardGame.getTotalGamesPlayed()+1);
-            System.out.println(dtoBoardGame);
+            dtoBoardGame.setTotalGamesPlayed(dtoBoardGame.getTotalGamesPlayed() + 1);
 
             boardGameService.save(dtoBoardGame);
         }
@@ -159,11 +154,10 @@ public class GameSessionController {
             Player player = playerService.findById(playerId);
             DtoPlayer dtoPlayer = new DtoPlayer();
             dtoPlayer.copyFromPlayer(player);
-            dtoPlayer.setTotalGamesPlayed(dtoPlayer.getTotalGamesPlayed()+1);
-            System.out.println(dtoPlayer);
+            dtoPlayer.setTotalGamesPlayed(dtoPlayer.getTotalGamesPlayed() + 1);
 
             ParticipatingPlayer participatingPlayer = new ParticipatingPlayer();
-            participatingPlayer.setId(new GameSessionPlayerPk(playerId,gameSession.getId()));
+            participatingPlayer.setId(new GameSessionPlayerPk(playerId, gameSession.getId()));
             participatingPlayer.setPlayer(playerService.findById(playerId));
             participatingPlayer.setGameSession(gameSession);
             participatingPlayers.add(participatingPlayer);
@@ -171,12 +165,12 @@ public class GameSessionController {
             playerService.save(dtoPlayer);
 
             PlayerGameStats playerGameStats;
-            if (StatsMap.containsKey(playerId)&&StatsMap.get(playerId)!=null) {
+            if (StatsMap.containsKey(playerId) && StatsMap.get(playerId) != null) {
                 playerGameStats = StatsMap.get(playerId);
             } else {
                 playerGameStats = new PlayerGameStats();
                 playerGameStats.setBoardGame(boardGame.get());
-                PlayerGameStatsPK pk = new PlayerGameStatsPK(playerId,boardgameId);
+                PlayerGameStatsPK pk = new PlayerGameStatsPK(playerId, boardgameId);
                 playerGameStats.setId(pk);
                 playerGameStats.setPlays(0);
                 playerGameStats.setWins(0);
@@ -184,7 +178,7 @@ public class GameSessionController {
                 playerGameStats.setWinLossRatio(00.00);
             }
 
-            if (winners != null && winners.contains(playerId)) {
+            if (winners.contains(playerId)) {
 
                 playerGameStats.setWins(playerGameStats.getWins() + 1);
             } else {
@@ -192,10 +186,10 @@ public class GameSessionController {
             }
 
             playerGameStats.setPlays(playerGameStats.getPlays() + 1);
-            if (playerGameStats.getLoses()==0){
+            if (playerGameStats.getLoses() == 0) {
                 playerGameStats.setWinLossRatio(100.00);
-            }else {
-                playerGameStats.setWinLossRatio((double) 100 * playerGameStats.getWins() /playerGameStats.getPlays());
+            } else {
+                playerGameStats.setWinLossRatio((double) 100 * playerGameStats.getWins() / playerGameStats.getPlays());
 
             }
 
@@ -203,16 +197,14 @@ public class GameSessionController {
         }
 
         List<SessionWinner> sessionWinnersList = new ArrayList<>();
-            if (winners != null) {
-                for (Integer winnerId : winners) {
-                    SessionWinner winner = new SessionWinner();
-                    winner.setGameSession(gameSession);
-                    winner.setPlayer(playerService.findById(winnerId));
-                    winner.setId(new GameSessionPlayerPk(winnerId, gameSession.getId()));
-                    sessionWinnersList.add(winner);
-                }
+        for (Integer winnerId : winners) {
+            SessionWinner winner = new SessionWinner();
+            winner.setGameSession(gameSession);
+            winner.setPlayer(playerService.findById(winnerId));
+            winner.setId(new GameSessionPlayerPk(winnerId, gameSession.getId()));
+            sessionWinnersList.add(winner);
+        }
 
-            }
         participatingPlayerService.saveAll(participatingPlayers);
         sessionWinnerService.saveAll(sessionWinnersList);
         playerGameStatsService.saveAll(playerGameStatsList);
@@ -232,7 +224,6 @@ public class GameSessionController {
     @GetMapping("/playerstats")
     public String getPlayerStats(@RequestParam("playerId") int id, Model model) {
         List<PlayerGameStats> playerGameStatsList = playerGameStatsService.getPlayerStatsForPlayer(id);
-        System.out.println(playerGameStatsList);
         Player player = playerService.findById(id);
         model.addAttribute("playerStats", playerGameStatsList);
         model.addAttribute("player", player);
@@ -240,117 +231,94 @@ public class GameSessionController {
     }
 
     @GetMapping("/leaderboard")
-    public String getPlayerBoardGameStatsGet(@RequestParam(required = false) String selectedGameType,Model model) {
+    public String getPlayerBoardGameStatsGet(@RequestParam(required = false) String selectedGameType, Model model) {
         return getPlayerBoardGameStats(selectedGameType, model);
     }
 
     @PostMapping("/leaderboardpost")
-    public String getPlayerBoardGameStatsPost(@RequestParam(required = false) String selectedGameType,Model model) {
+    public String getPlayerBoardGameStatsPost(@RequestParam(required = false) String selectedGameType, Model model) {
         return getPlayerBoardGameStats(selectedGameType, model);
     }
 
     @GetMapping("/gameSessions")
-    public String showGameSessions(@RequestParam(required = false) String boardGameId,Model model) {
+    public String showGameSessionsGet(@RequestParam(required = false) String boardGameId, Model model) {
+        return showGameSessions(boardGameId, model);
+    }
+
+    private String showGameSessions(@RequestParam(required = false) String boardGameId, Model model) {
         int gameId;
-        if (boardGameId==null||boardGameId.isEmpty()){
+        if (boardGameId == null || boardGameId.isEmpty()) {
             gameId = 0;
-        }else {
+        } else {
             gameId = Integer.parseInt(boardGameId);
         }
         List<GameSession> gameSessions;
-        if (gameId!=0) {
+        if (gameId != 0) {
             gameSessions = gameSessionService.getGameSessions(gameId);
         } else {
             gameSessions = gameSessionService.getGameSessions(0);
         }
 
         Map<Integer, String> winners = new HashMap<>();
-        Map<Integer,String> losers = new HashMap<>();
-        List<BoardGame>boardGames = boardGameService.findAll();
+        Map<Integer, String> losers = new HashMap<>();
+        List<BoardGame> boardGames = boardGameService.findAll();
         for (GameSession gameSession : gameSessions) {
             losers.put(gameSession.getId(), getLosers(gameSession.getId()));
             winners.put(gameSession.getId(), getWinners(gameSession.getId()));
         }
-        model.addAttribute("winners",winners);
-        model.addAttribute("losers",losers);
+        model.addAttribute("winners", winners);
+        model.addAttribute("losers", losers);
         model.addAttribute("gameSessions", gameSessions);
-        model.addAttribute("boardgames",boardGames);
+        model.addAttribute("boardgames", boardGames);
         return "gameSessions/display-gameSessions";
     }
 
     @PostMapping("/gamesessionspost")
-    public String showGameSessionsPost(@RequestParam(required = false) String boardGameId,Model model) {
-        int gameId;
-        if (boardGameId==null||boardGameId.isEmpty()){
-            gameId = 0;
-        }else {
-            gameId = Integer.parseInt(boardGameId);
-        }
-        List<GameSession> gameSessions;
-        if (gameId!=0) {
-            gameSessions = gameSessionService.getGameSessions(gameId);
-        } else {
-            gameSessions = gameSessionService.getGameSessions(0);
-        }
-
-        Map<Integer, String> winners = new HashMap<>();
-        Map<Integer,String> losers = new HashMap<>();
-        List<BoardGame>boardGames = boardGameService.findAll();
-        for (GameSession gameSession : gameSessions) {
-            losers.put(gameSession.getId(), getLosers(gameSession.getId()));
-            winners.put(gameSession.getId(), getWinners(gameSession.getId()));
-        }
-        model.addAttribute("winners",winners);
-        model.addAttribute("losers",losers);
-        model.addAttribute("gameSessions", gameSessions);
-        model.addAttribute("boardgames",boardGames);
-        return "gameSessions/display-gameSessions";
+    public String showGameSessionsPost(@RequestParam(required = false) String boardGameId, Model model) {
+        return showGameSessions(boardGameId, model);
     }
 
     @GetMapping("/delete")
-    public String delete(@RequestParam("gameSessionId") int id){
+    public String delete(@RequestParam("gameSessionId") int id) {
 
         GameSession gameSession = gameSessionService.findById(id);
         //reducing the board game total plays
         BoardGame boardGame = boardGameService.findById(gameSession.getGameId());
         DtoBoardGame dtoBoardGame = new DtoBoardGame();
         dtoBoardGame.copyFromBoardGame(boardGame);
-        dtoBoardGame.setTotalGamesPlayed(dtoBoardGame.getTotalGamesPlayed()-1);
+        dtoBoardGame.setTotalGamesPlayed(dtoBoardGame.getTotalGamesPlayed() - 1);
         boardGameService.save(dtoBoardGame);
 
         List<SessionWinner> sessionWinners = sessionWinnerService.findByGameSession_Id(id);
         List<Integer> winnerIds = new ArrayList<>();
-        for (SessionWinner sessionWinner : sessionWinners ){
+        for (SessionWinner sessionWinner : sessionWinners) {
             winnerIds.add(sessionWinner.getPlayer().getId());
         }
         List<ParticipatingPlayer> allPlayers = participatingPlayerService.findByGameSession_Id(id);
-        for (ParticipatingPlayer participatingPlayer: allPlayers){
-            PlayerGameStats playerGameStats = playerGameStatsService.findById(new PlayerGameStatsPK(participatingPlayer.getPlayer().getId(),gameSession.getGameId())).orElse(null);
+        for (ParticipatingPlayer participatingPlayer : allPlayers) {
+            PlayerGameStats playerGameStats = playerGameStatsService.findById(new PlayerGameStatsPK(participatingPlayer.getPlayer().getId(), gameSession.getGameId())).orElse(null);
             //reducing the player's total plays
             Player player = playerService.findById(participatingPlayer.getPlayer().getId());
             DtoPlayer dtoPlayer = new DtoPlayer();
             dtoPlayer.copyFromPlayer(player);
-            dtoPlayer.setTotalGamesPlayed(dtoPlayer.getTotalGamesPlayed()-1);
+            dtoPlayer.setTotalGamesPlayed(dtoPlayer.getTotalGamesPlayed() - 1);
             playerService.save(dtoPlayer);
 
 
-            if (winnerIds.contains(participatingPlayer.getPlayer().getId())){
-                System.out.println("removing win fromm    " + participatingPlayer.getPlayer());
+            if (winnerIds.contains(participatingPlayer.getPlayer().getId())) {
                 assert playerGameStats != null;
-                playerGameStats.setWins(playerGameStats.getWins()-1);
-            }else {
+                playerGameStats.setWins(playerGameStats.getWins() - 1);
+            } else {
                 assert playerGameStats != null;
-                System.out.println("removing loss fromm    " + participatingPlayer.getPlayer());
-                playerGameStats.setLoses(playerGameStats.getLoses()-1);
+                playerGameStats.setLoses(playerGameStats.getLoses() - 1);
             }
-            System.out.println("removing play fromm    " + participatingPlayer.getPlayer());
-            playerGameStats.setPlays(playerGameStats.getPlays()-1);
-            if (playerGameStats.getPlays()==0){
+            playerGameStats.setPlays(playerGameStats.getPlays() - 1);
+            if (playerGameStats.getPlays() == 0) {
                 playerGameStats.setWinLossRatio(0.00);
-            } else if (playerGameStats.getLoses()==0){
+            } else if (playerGameStats.getLoses() == 0) {
                 playerGameStats.setWinLossRatio(100.00);
-            }else {
-                playerGameStats.setWinLossRatio((double) 100 * playerGameStats.getWins() /playerGameStats.getPlays());
+            } else {
+                playerGameStats.setWinLossRatio((double) 100 * playerGameStats.getWins() / playerGameStats.getPlays());
 
             }
 
@@ -407,7 +375,6 @@ public class GameSessionController {
     }
 
 
-
     private String getPlayerBoardGameStats(@RequestParam(required = false) String selectedGameType, Model model) {
         List<Object[]> resultList;
         if (selectedGameType != null && !selectedGameType.isEmpty()) {
@@ -424,7 +391,7 @@ public class GameSessionController {
             stats.put("wins", result[1]);
             stats.put("loses", result[2]);
             stats.put("plays", result[3]);
-            if ((long)result[3] != 0) {
+            if ((long) result[3] != 0) {
                 double ratio = ((double) (long) result[1] / (long) result[3]) * 100;
                 stats.put("ratio", ratio);
             } else {
@@ -432,9 +399,9 @@ public class GameSessionController {
             }
             data.add(stats);
         }
-        model.addAttribute("selectedGameType",selectedGameType);
-        model.addAttribute("gameTypes",boardGameConfig.GAME_TYPES);
-        model.addAttribute("data",data);
+        model.addAttribute("selectedGameType", selectedGameType);
+        model.addAttribute("gameTypes", boardGameConfig.GAME_TYPES);
+        model.addAttribute("data", data);
         return "gameSessions/leaderboard-display";
     }
 
@@ -448,7 +415,6 @@ public class GameSessionController {
         }
         return false;
     }
-
 
 
 }

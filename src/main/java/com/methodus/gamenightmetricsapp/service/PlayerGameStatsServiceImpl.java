@@ -1,7 +1,6 @@
 package com.methodus.gamenightmetricsapp.service;
 
 import com.methodus.gamenightmetricsapp.dao.PlayerGameStatsRepository;
-import com.methodus.gamenightmetricsapp.entity.Player;
 import com.methodus.gamenightmetricsapp.entity.PlayerGameStats;
 import com.methodus.gamenightmetricsapp.entity.PlayerGameStatsPK;
 import jakarta.transaction.Transactional;
@@ -26,8 +25,8 @@ public class PlayerGameStatsServiceImpl implements  PlayerGameStatsService {
 
 
     @Override
-    public List<PlayerGameStats> saveAll(List<PlayerGameStats> playerGameStatsList) {
-        return playerGameStatsRepository.saveAll(playerGameStatsList);
+    public void saveAll(List<PlayerGameStats> playerGameStatsList) {
+        playerGameStatsRepository.saveAll(playerGameStatsList);
     }
 
     @Override

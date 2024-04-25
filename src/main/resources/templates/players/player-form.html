@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.springframework.org/schema/security">
+      xmlns:sec="http://www.springframework.org/schema/security" lang="en">
 
 <head>
     <meta charset="UTF-8">
     <title>Save Player</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" th:href="@{/css/styles.css}"/>
 </head>
 <body>
@@ -20,7 +21,7 @@
     <form action="#" th:action="@{/players/save}"
           th:object="${player}" method="POST" onsubmit="return validatePasswords()">
 
-        <input type="hidden" th:field="*{id}" />
+        <input type="hidden" th:field="*{id}"/>
 
         <div class="form-group">
             <div class="col-xs-15">
@@ -40,21 +41,21 @@
             <div th:if="${#fields.hasErrors('username')}"
                  style="margin-bottom: 25px" class="text-danger">
                 <ul>
-                    <li th:each="err : ${#fields.errors('username')}" th:text="'Username ' + ${err}" />
+                    <li th:each="err : ${#fields.errors('username')}" th:text="'Username ' + ${err}"/>
                 </ul>
             </div>
         </div>
 
 
-
         <div class="mb-3">
             <label for="password" class="form-label">Password:</label>
-            <input type="password" th:field="*{password}" class="form-control w-25" id="password" placeholder="Password">
+            <input type="password" th:field="*{password}" class="form-control w-25" id="password"
+                   placeholder="Password">
 
             <div th:if="${#fields.hasErrors('password')}"
                  style="margin-bottom: 25px" class="text-danger">
                 <ul>
-                    <li th:each="err : ${#fields.errors('password')}" th:text="'Password ' + ${err}" />
+                    <li th:each="err : ${#fields.errors('password')}" th:text="'Password ' + ${err}"/>
                 </ul>
             </div>
         </div>
@@ -115,13 +116,12 @@
         <button type="submit" class="btn btn-warning col-2">Save</button>
         <div sec:authorize="hasRole('USER')">
             <hr class="border">
-            <a th:href="@{/players/list}" >Back to Players List</a>
+            <a th:href="@{/players/list}">Back to Players List</a>
         </div>
 
     </form>
 
 </div>
-
 
 
 <script>

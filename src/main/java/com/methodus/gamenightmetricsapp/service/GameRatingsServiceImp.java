@@ -9,8 +9,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class GameRatingsServiceImp implements GameRatingsService{
-    private GameRatingsRepository gameRatingsRepository;
+public class GameRatingsServiceImp implements GameRatingsService {
+    private final GameRatingsRepository gameRatingsRepository;
+
     @Autowired
     public GameRatingsServiceImp(GameRatingsRepository gameRatingsRepository) {
         this.gameRatingsRepository = gameRatingsRepository;

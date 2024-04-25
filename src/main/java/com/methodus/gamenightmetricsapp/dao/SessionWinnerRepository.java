@@ -9,6 +9,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SessionWinnerRepository extends JpaRepository<SessionWinner, GameSessionPlayerPk> {
-    public List<SessionWinner> findAllByGameSession(Optional<GameSession> gameSession);
+    List<SessionWinner> findAllByGameSession(Optional<GameSession> gameSession);
 }
 

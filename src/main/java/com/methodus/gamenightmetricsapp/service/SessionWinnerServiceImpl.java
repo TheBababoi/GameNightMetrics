@@ -2,20 +2,19 @@ package com.methodus.gamenightmetricsapp.service;
 
 import com.methodus.gamenightmetricsapp.dao.GameSessionRepository;
 import com.methodus.gamenightmetricsapp.dao.SessionWinnerRepository;
-
 import com.methodus.gamenightmetricsapp.entity.SessionWinner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class SessionWinnerServiceImpl implements SessionWinnerService{
+public class SessionWinnerServiceImpl implements SessionWinnerService {
 
-    private SessionWinnerRepository sessionWinnerRepository;
-    private GameSessionRepository gameSessionRepository;
+    private final SessionWinnerRepository sessionWinnerRepository;
+    private final GameSessionRepository gameSessionRepository;
+
     @Autowired
     public SessionWinnerServiceImpl(SessionWinnerRepository sessionWinnerRepository, GameSessionRepository gameSessionRepository) {
         this.sessionWinnerRepository = sessionWinnerRepository;
@@ -23,8 +22,8 @@ public class SessionWinnerServiceImpl implements SessionWinnerService{
     }
 
     @Override
-    public List<SessionWinner> saveAll(List<SessionWinner> sessionWinnersList) {
-       return sessionWinnerRepository.saveAll(sessionWinnersList);
+    public void saveAll(List<SessionWinner> sessionWinnersList) {
+        sessionWinnerRepository.saveAll(sessionWinnersList);
     }
 
     @Override

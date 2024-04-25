@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,10 +17,12 @@
             padding: 10px 20px; /* Increase button padding */
             border-radius: 5px; /* Rounded corners for buttons */
         }
+
         .btn-primary:hover {
             background-color: #806940; /* Darker brown on hover */
             border-color: #806940;
         }
+
         .btn-warning {
             background-color: #c0a460; /* Yellowish button color */
             border-color: #c0a460;
@@ -28,10 +30,12 @@
             padding: 10px 20px;
             border-radius: 5px;
         }
+
         .btn-warning:hover {
             background-color: #b3944e; /* Darker yellow on hover */
             border-color: #b3944e;
         }
+
         /* Style the logout button similar to other buttons */
         .btn-logout {
             background-color: #b03a2a; /* Dark red button color */
@@ -40,6 +44,7 @@
             padding: 10px 20px;
             border-radius: 5px;
         }
+
         .btn-logout:hover {
             background-color: #982e20; /* Darker red on hover */
             border-color: #982e20;
@@ -47,7 +52,8 @@
     </style>
 </head>
 <body>
-<div class="container" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
+<div class="container"
+     style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
     <h1>Welcome, [[${username}]] !</h1>
     <p class="choice-text" style="font-size: 1.5em;">Now make a choice:</p>
     <div class="button-container d-flex justify-content-center gap-5 mb-3">

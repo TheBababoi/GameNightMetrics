@@ -68,40 +68,23 @@ public class GameRatings {
         return totalRating;
     }
 
-    public void setTotalRating(int totalRating) {
-        this.totalRating = totalRating;
-    }
 
     public int getGameplayRating() {
         return gameplayRating;
     }
 
-    public void setGameplayRating(int gameplayRating) {
-        this.gameplayRating = gameplayRating;
-    }
 
     public int getThemeRating() {
         return themeRating;
     }
 
-    public void setThemeRating(int themeRating) {
-        this.themeRating = themeRating;
-    }
 
     public int getVisualRating() {
         return visualRating;
     }
 
-    public void setVisualRating(int visualRating) {
-        this.visualRating = visualRating;
-    }
-
     public int getDifficultyRating() {
         return difficultyRating;
-    }
-
-    public void setDifficultyRating(int difficultyRating) {
-        this.difficultyRating = difficultyRating;
     }
 
     public BoardGame getBoardGame() {
@@ -113,13 +96,9 @@ public class GameRatings {
     }
 
 
-
     public String getComment() {
         return comment;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
 }
 

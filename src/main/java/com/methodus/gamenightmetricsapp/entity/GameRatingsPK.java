@@ -28,11 +28,4 @@ public class GameRatingsPK implements Serializable {
         this.playerId = playerId;
     }
 
-    public int getGameId() {
-        return gameId;
-    }
-
-    public void setGameId(int gameId) {
-        this.gameId = gameId;
-    }
 }

@@ -14,15 +14,13 @@ public class DtoPlayer {
     @NotNull(message = "Password is required")
     @Size(min = 4, max = 40, message = " must be between 4 and 40 characters long")
     private String password;
-    @Column(name="skill_level")
+    @Column(name = "skill_level")
     private String skillLevel;
-    @Column(name="play_style")
+    @Column(name = "play_style")
     private String playStyle;
-    @Column(name="preferred_game_type")
+    @Column(name = "preferred_game_type")
     private String preferredGameType;
     private int totalGamesPlayed;
-
-
 
 
     public DtoPlayer() {

@@ -2,8 +2,6 @@ package com.methodus.gamenightmetricsapp.entity;
 
 import jakarta.persistence.*;
 
-import java.util.Optional;
-
 @Entity
 @Table(name = "player_game_stats")
 public class PlayerGameStats {
@@ -84,10 +82,10 @@ public class PlayerGameStats {
     public void setWinLossRatio(double winLossRatio) {
         this.winLossRatio = winLossRatio;
     }
+
     public BoardGame getBoardGame() {
         return boardGame;
     }
-
 
 
 }

@@ -22,11 +22,6 @@ public class GameSessionServiceImpl implements GameSessionService{
     }
 
     @Override
-    public List<GameSession> findAll() {
-        return gameSessionRepository.findAll();
-    }
-
-    @Override
     public GameSession findById(int id) {
         return gameSessionRepository.findById(id);
     }

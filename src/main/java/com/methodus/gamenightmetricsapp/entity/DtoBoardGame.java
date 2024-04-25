@@ -1,6 +1,5 @@
 package com.methodus.gamenightmetricsapp.entity;
 
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -75,24 +74,12 @@ public class DtoBoardGame {
         return averageTotalRating;
     }
 
-    public void setAverageTotalRating(double averageTotalRating) {
-        this.averageTotalRating = averageTotalRating;
-    }
-
     public int getAverageDifficultyRating() {
         return averageDifficultyRating;
     }
 
-    public void setAverageDifficultyRating(int averageDifficultyRating) {
-        this.averageDifficultyRating = averageDifficultyRating;
-    }
-
     public int getNumberOfRatings() {
         return numberOfRatings;
-    }
-
-    public void setNumberOfRatings(int numberOfRatings) {
-        this.numberOfRatings = numberOfRatings;
     }
 
     public void copyFromBoardGame(BoardGame boardGame) {

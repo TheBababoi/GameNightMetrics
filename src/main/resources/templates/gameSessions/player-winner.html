@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Select Winners</title>
@@ -20,9 +20,12 @@
         <input type="hidden" name="players" th:value="${player.id}">
     </div>
     <div th:each="player : ${players}">
-        <label th:text="${player.username}"></label>
-        <input type="checkbox" name="winners" th:value="${player.id}">
+        <label>
+            <span th:text="${player.username}"></span>
+            <input type="checkbox" name="winners" th:value="${player.id}">
+        </label>
     </div>
+
     <div class="form-group">
         <label for="sessionDuration">Session Duration:</label>
         <select class="form-control" id="sessionDuration" name="sessionDuration" required>
